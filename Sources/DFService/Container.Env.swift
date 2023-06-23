@@ -44,10 +44,7 @@ public extension Container {
     /// 获取当前环境变量
     func getEnvironments() -> [String: String] {
         var map = environment.map.compactMapValues { $0 as? String }
-        let mirror = Mirror(reflecting: self)
-        for child in mirror.children {
-            print("\(child.label!)---\(child.value)")
-        }
+        let mirror = Mirror(reflecting: environment)
         map = mirror.children.reduce(into: map) { partialResult, tuple in
             if let k = tuple.label, let value = tuple.value as? String {
                 partialResult[k] = value
