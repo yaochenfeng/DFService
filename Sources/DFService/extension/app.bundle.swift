@@ -18,7 +18,7 @@ extension Space where Base == Bundle {
     public static var buildVersion: String {
         Bundle.main.app.getInfo("CFBundleVersion") ?? "0.0"
     }
-
+    
     /// 应用信息
     public func getInfo<T>(_ key: String) -> T? {
         guard let value = base.infoDictionary?[key] else {
