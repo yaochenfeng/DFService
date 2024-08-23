@@ -41,7 +41,8 @@ extension Space: View where Base: View {
 public extension View {
     /// 链式操作
     func chain<Content: View>(
-        @ViewBuilder transform: (Self) -> Content
+        @ViewBuilder
+        transform: (Self) -> Content
     ) -> some View {
         transform(self)
     }

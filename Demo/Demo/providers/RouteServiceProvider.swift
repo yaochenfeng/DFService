@@ -2,10 +2,7 @@ import DFService
 import SwiftUI
 class RouteServiceProvider: ServiceProvider {
     
-    override func performAsyncStartup() async throws {
-        guard let app = app as? DemoApp else {
-            return
-        }
+    override func performAsyncStartup() async {
         app.rootView = AnyView(buildRoot())
     }
     override var when: ServiceProvider.ProviderWhen {

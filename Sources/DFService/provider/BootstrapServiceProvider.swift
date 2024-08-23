@@ -42,13 +42,9 @@ actor Bootstrap {
                 let cost_time = (end_time - start_time) * 1000
                 debugPrint("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
             }
-            do {
-                try await provider.performAsyncStartup()
-                success = true
-                provider.isBooted = true
-            } catch {
-                
-            }
+            await provider.performAsyncStartup()
+            success = true
+            provider.isBooted = true
             
         }
         self.isRunning = false
@@ -58,7 +54,6 @@ actor Bootstrap {
 
 class BootstrapServiceProvider: ServiceProvider {
     let bootstrap: Bootstrap
-    
     required init(_ app: DFApplication) {
         bootstrap = Bootstrap(app: app)
         super.init(app)
@@ -80,5 +75,17 @@ class BootstrapServiceProvider: ServiceProvider {
     
     override var when: ServiceProvider.ProviderWhen {
         return .eager
+    }
+}
+
+
+extension ServiceProvider {
+    
+}
+
+
+public extension DFApplication {
+    var runtime: DF.Runtime {
+        return DF.runtime
     }
 }

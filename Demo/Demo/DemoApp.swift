@@ -8,20 +8,31 @@
 import SwiftUI
 import DFService
 @main
-class DemoApp: SwiftApp {
-    let persistenceController = PersistenceController.shared
-    
-    required init() {
-        super.init()
-        self.rootView = AnyView(self.buildRoot())
-        self.bootstrap(.eager)
-    }
-    
-    @ViewBuilder
-    func buildRoot() -> some View {
-        NavigationView {
-            Text("demo2sdf")
-        }
+struct DemoApp: App {
+    init() {
+        context.bootstrap(.eager)
         
     }
+    @ObservedObject
+    var context = AppContext()
+    @SceneBuilder
+    public var body: some Scene {
+        WindowGroup {
+            context.rootView
+        }
+    }
 }
+
+extension DemoApp {
+    class AppContext: DFApplication, ObservableObject {
+        var providerType: [ServiceProvider.Type] {
+            return [AppServiceProvider.self]
+        }
+        
+        var loadProviders: [ServiceProvider] = []
+        
+        @Published
+        var rootView: AnyView = AnyView(EmptyView())
+    }
+}
+

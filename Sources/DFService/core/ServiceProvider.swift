@@ -10,13 +10,13 @@ open class ServiceProvider {
     /// 注册服务
     open func register() {}
     /// 模拟异步启动逻辑
-    open func performAsyncStartup() async throws {
+    open func performAsyncStartup() async {
         // 重写此方法以实现实际的异步启动逻辑
-//         try await Task.sleep(nanoseconds: 1_000_000_000)// 模拟1秒的异步启动
+//         try? await Task.sleep(nanoseconds: 1_000_000_000)// 模拟1秒的异步启动
     }
     
     /// 模拟异步关闭逻辑
-    open func performAsyncShutdown() async throws {
+    open func performAsyncShutdown() async {
         // 重写此方法以实现实际的异步关闭逻辑
 //        try await Task.sleep(nanoseconds: 1_000_000_000) // 模拟1秒的异步关闭
     }

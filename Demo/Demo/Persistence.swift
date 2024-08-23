@@ -6,11 +6,18 @@
 //
 
 import CoreData
-
+import DFService
 struct PersistenceController {
-    static let shared = PersistenceController()
-
-    static var preview: PersistenceController = {
+    static var runtime: PersistenceController {
+        if DF.runtime.isPreview {
+            return Self.preview
+        } else {
+            return Self.shared
+        }
+    }
+    
+   fileprivate static let shared = PersistenceController()
+   fileprivate static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for _ in 0..<10 {
