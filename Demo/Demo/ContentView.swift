@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import DFService
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,14 +18,21 @@ struct ContentView: View {
     private var items: FetchedResults<Item>
 
     var body: some View {
-        NavigationView {
+//        NavigationView {
             List {
                 ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
+//                    NavigationLink {
+//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+//                    } label: {
+//
+//                    }
+                    Text(item.timestamp!, formatter: itemFormatter)
+                        .onTapGesture {
+                            let request = RouteRequest(.detail)
+                            request.options["data"] = item
+                            Router.shared.go(request)
+                        }
+                
                 }
                 .onDelete(perform: deleteItems)
             }
@@ -39,9 +47,13 @@ struct ContentView: View {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
+            }.onAppear {
+//                ServiceValues[RouteService.self].pagePath.append()
+//                Router.shared.go(RouteRequest(.detail))
             }
-            Text("Select an item")
-        }
+        
+//            Text("Select an item")
+//        }
     }
 
     private func addItem() {

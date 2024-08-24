@@ -3,14 +3,12 @@ public protocol DFLogHandle {
 }
 
 public struct LogService: DFApiService {
-    public static let serviceName: ServiceName = .logger
-    
     public static var defaultValue: DFLogHandle {
-        return MockApiService()
+        return MockApiServiceImpl()
     }
 }
 
-extension MockApiService: DFLogHandle {
+extension MockApiServiceImpl: DFLogHandle {
     func debug(_ msg: String) {
         debugPrint(msg)
     }

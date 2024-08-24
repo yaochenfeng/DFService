@@ -3,7 +3,7 @@ import SwiftUI
 class RouteServiceProvider: ServiceProvider {
     
     override func performAsyncStartup() async {
-        app.rootView = AnyView(buildRoot())
+//        app.rootView = AnyView(buildRoot())
     }
     override var when: ServiceProvider.ProviderWhen {
         return .window
@@ -14,4 +14,8 @@ class RouteServiceProvider: ServiceProvider {
     func buildRoot() -> some View {
         Text("root View")
     }
+}
+
+extension Router.PagePath {
+    static let detail =  Router.PagePath(rawValue: "page/detail")
 }

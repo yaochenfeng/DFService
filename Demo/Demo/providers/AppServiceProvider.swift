@@ -6,6 +6,15 @@ class AppServiceProvider: ServiceProvider {
             app.provider(provider)
         }
         super.register()
+        Router.shared.add(pid: .root) { _ in
+            self.buildRoot()
+        }
+        
+        Router.shared.add(pid: .detail) { req in
+            let item = req.options["data"] as? Item ?? Item()
+            let timestap = item.timestamp ?? Date()
+            Text("Select an item \(timestap)")
+        }
     }
 
     var appProvider: [ServiceProvider.Type] {
@@ -20,7 +29,7 @@ class AppServiceProvider: ServiceProvider {
     
     override func performAsyncStartup() async {
         DispatchQueue.main.async {
-            self.app.rootView = AnyView(self.buildRoot())
+//            self.app.rootView = AnyView(self.buildRoot())
         }
     }
     
