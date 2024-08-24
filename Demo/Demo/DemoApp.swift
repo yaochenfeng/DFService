@@ -11,7 +11,6 @@ import DFService
 struct DemoApp: App {
     init() {
         context.bootstrap(.eager)
-        
     }
     @ObservedObject
     var context = AppContext()

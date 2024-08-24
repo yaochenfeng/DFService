@@ -40,7 +40,7 @@ actor Bootstrap {
             defer {
                 let end_time = CFAbsoluteTimeGetCurrent()
                 let cost_time = (end_time - start_time) * 1000
-                debugPrint("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
+                app[LogService.self].debug("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
             }
             await provider.performAsyncStartup()
             success = true
@@ -75,17 +75,5 @@ class BootstrapServiceProvider: ServiceProvider {
     
     override var when: ServiceProvider.ProviderWhen {
         return .eager
-    }
-}
-
-
-extension ServiceProvider {
-    
-}
-
-
-public extension DFApplication {
-    var runtime: DF.Runtime {
-        return DF.runtime
     }
 }
