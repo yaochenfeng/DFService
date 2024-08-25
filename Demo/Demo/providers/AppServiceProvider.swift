@@ -6,12 +6,12 @@ class AppServiceProvider: ServiceProvider {
             app.provider(provider)
         }
         super.register()
-        Router.shared.add(pid: .root) { _ in
+        Router.shared.addPage(.root) { _ in
             self.buildRoot()
         }
         
-        Router.shared.add(pid: .detail) { req in
-            let item = req.options["data"] as? Item ?? Item()
+        Router.shared.addPage(.detail) { req in
+            let item = req.param as? Item ?? Item()
             let timestap = item.timestamp ?? Date()
             Text("Select an item \(timestap)")
         }

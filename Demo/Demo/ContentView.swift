@@ -28,8 +28,8 @@ struct ContentView: View {
 //                    }
                     Text(item.timestamp!, formatter: itemFormatter)
                         .onTapGesture {
-                            let request = RouteRequest(.detail)
-                            request.options["data"] = item
+                            let request = RouteRequest(page: .detail)
+                            request.param = item
                             Router.shared.go(request)
                         }
                 

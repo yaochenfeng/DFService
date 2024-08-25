@@ -16,6 +16,6 @@ class RouteServiceProvider: ServiceProvider {
     }
 }
 
-extension Router.PagePath {
-    static let detail =  Router.PagePath(rawValue: "page/detail")
+extension Router.RoutePath {
+    static let detail =  Router.RoutePath(rawValue: "page/detail")
 }
