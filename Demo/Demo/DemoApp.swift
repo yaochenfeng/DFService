@@ -10,28 +10,15 @@ import DFService
 @main
 struct DemoApp: App {
     init() {
-        context.bootstrap(.eager)
+        appService.bootstrap(.eager)
     }
     @ObservedObject
-    var context = AppContext()
+    var appService = ServiceValues[AppService.self]
     @SceneBuilder
     public var body: some Scene {
         WindowGroup {
-            context.rootView
+            appService.rootView
         }
-    }
-}
-
-extension DemoApp {
-    class AppContext: DFApplication, ObservableObject {
-        var providerType: [ServiceProvider.Type] {
-            return [AppServiceProvider.self]
-        }
-        
-        var loadProviders: [ServiceProvider] = []
-        
-        @Published
-        var rootView: AnyView = AnyView(EmptyView())
     }
 }
 

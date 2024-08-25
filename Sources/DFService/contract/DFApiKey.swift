@@ -1,8 +1,7 @@
-public protocol DFApiService {
+import SwiftUI
+public protocol DFApiService: EnvironmentKey {
     associatedtype Value
     static var defaultValue: Self.Value { get }
-    
-    static var serviceName: ServiceName { get }
 }
 
 extension DFApplication {

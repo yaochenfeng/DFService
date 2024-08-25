@@ -1,12 +1,10 @@
-import Foundation
+public struct RuntimeService: DFApiService {
+    public static var defaultValue: Value = Value()
 
-extension DF {
-    public static let runtime = Runtime()
-    
-    public struct Runtime {
-    }
+    public struct Value {}
 }
-public extension DF.Runtime {
+
+public extension RuntimeService.Value {
     var isPreview: Bool {
         return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
@@ -16,11 +14,5 @@ public extension DF.Runtime {
         #else
         return false
         #endif
-    }
-}
-
-public extension DFApplication {
-    var runtime: DF.Runtime {
-        return DF.runtime
     }
 }
