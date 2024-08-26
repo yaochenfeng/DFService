@@ -29,6 +29,16 @@ public struct RouterView: View {
                 if let path = router.pagePath.last {
                     router.page(path)
                 }
+            }.chain { view in
+                #if os(macOS)
+                    view
+                #else
+                if #available(iOS 13.0, *) {
+                    view.navigationViewStyle(.stack)
+                } else {
+                    view
+                }
+                #endif
             }
         }
     }

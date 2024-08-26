@@ -20,4 +20,10 @@ public struct ArrayBuilder<T> {
     public static func buildEither(second component: [T]) -> [T] {
         return component
     }
+    
+    public static func buildBlock(_ components: [T]...) -> [T] {
+        return components.reduce([T]()) { partialResult, value in
+            return partialResult + value
+        }
+    }
 }
