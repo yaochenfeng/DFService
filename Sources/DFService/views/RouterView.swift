@@ -30,11 +30,15 @@ public struct RouterView: View {
                     router.page(path)
                 }
             }.chain { view in
-                if #unavailable(macOS 10) {
+                #if os(macOS)
+                    view
+                #else
+                if #available(iOS 13.0, *) {
                     view.navigationViewStyle(.stack)
                 } else {
                     view
                 }
+                #endif
             }
         }
     }
