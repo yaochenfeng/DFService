@@ -30,7 +30,7 @@ public struct RouterView: View {
                     router.page(path)
                 }
             }.chain { view in
-                if #available(iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+                if #unavailable(macOS 10) {
                     view.navigationViewStyle(.stack)
                 } else {
                     view
