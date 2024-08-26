@@ -29,6 +29,12 @@ public struct RouterView: View {
                 if let path = router.pagePath.last {
                     router.page(path)
                 }
+            }.chain { view in
+                if #available(iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+                    view.navigationViewStyle(.stack)
+                } else {
+                    view
+                }
             }
         }
     }

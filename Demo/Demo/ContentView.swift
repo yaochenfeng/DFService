@@ -47,10 +47,7 @@ struct ContentView: View {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
-            }.onAppear {
-//                ServiceValues[RouteService.self].pagePath.append()
-//                Router.shared.go(RouteRequest(.detail))
-            }
+            }.navigationTitle("首页")
         
 //            Text("Select an item")
 //        }
