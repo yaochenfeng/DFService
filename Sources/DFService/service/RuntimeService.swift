@@ -1,4 +1,4 @@
-public struct RuntimeService: DFApiService {
+public struct RuntimeService: DFServiceKey {
     public static var defaultValue: Value = Value()
 
     public struct Value {}

@@ -1,12 +1,12 @@
 import Foundation
 
 actor Bootstrap {
-    private weak var app: DFApplication?
+    private weak var app: Application?
     
     private var current: ServiceProvider.ProviderWhen = .eager
     private var target: ServiceProvider.ProviderWhen = .eager
     private var isRunning = false
-    init(app: DFApplication) {
+    init(app: Application) {
         self.app = app
     }
     
@@ -34,6 +34,9 @@ actor Bootstrap {
             return
         }
         self.isRunning = true
+        defer {
+            self.isRunning = false
+        }
         for provider in currentProviders where !provider.isBooted {
             let start_time = CFAbsoluteTimeGetCurrent()
             var success = false
@@ -42,19 +45,23 @@ actor Bootstrap {
                 let cost_time = (end_time - start_time) * 1000
                 app[LogService.self].debug("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
             }
-            await provider.performAsyncStartup()
-            success = true
-            provider.isBooted = true
-            
+            do {
+                try await provider.performAsyncStartup()
+                provider.isBooted = true
+                success = true
+            } catch {
+                app[LogService.self].warning("\(provider.name) 启动失败\(error)")
+                return
+            }
         }
-        self.isRunning = false
+        
         await bootIfNeed()
     }
 }
 
 class BootstrapServiceProvider: ServiceProvider {
     let bootstrap: Bootstrap
-    required init(_ app: DFApplication) {
+    required init(_ app: Application) {
         bootstrap = Bootstrap(app: app)
         super.init(app)
     }
@@ -76,4 +83,33 @@ class BootstrapServiceProvider: ServiceProvider {
     override var when: ServiceProvider.ProviderWhen {
         return .eager
     }
+}
+
+
+
+public extension Application {
+    @discardableResult
+    func provider<T: ServiceProvider>(_ serviceType: T.Type = T.self) -> T {
+        
+        let loadProvider = loadProviders.first { loaded in
+            return loaded.name == serviceType.name
+        }
+        if let provider = loadProvider as? T {
+            return provider
+        }
+        let provider = serviceType.init(self)
+        loadProviders.append(provider)
+        provider.register()
+        return provider
+    }
+    
+    
+    func bootstrap(_ when: ServiceProvider.ProviderWhen) {
+        provider(BootstrapServiceProvider.self).bootstrap(when)
+    }
+    /// 重置启动，执行provider Shutdown
+    func reset(_ when: ServiceProvider.ProviderWhen) {
+        provider(BootstrapServiceProvider.self).bootstrap(when)
+    }
+    
 }

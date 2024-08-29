@@ -1,6 +1,7 @@
 public class ApiCallConext {
     let method: String
     let param: Codable
+    public var options = [String: Any]()
     
     public init(method: String, param: Codable) {
         self.method = method

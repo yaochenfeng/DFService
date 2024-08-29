@@ -35,11 +35,11 @@ extension Space where Base == Bundle {
         name = namespace.replacingOccurrences(of: " ", with: "_") + "." + name
     }
     guard name.components(separatedBy: ".").count > 1 else {
-      throw DFError.notFound("module")
+      throw CommonError.notFound("module")
     }
-    guard let loadedClass = base.classNamed(name) else { throw DFError.notFound(type) }
+    guard let loadedClass = base.classNamed(name) else { throw CommonError.notFound(type) }
     guard let castedClass = loadedClass as? T.Type else {
-      throw DFError.convert(from: String(describing: loadedClass), to: name)
+      throw CommonError.convert(from: String(describing: loadedClass), to: name)
     }
 
     return castedClass

@@ -1,6 +1,6 @@
 import Foundation
 /// 常用错误定义
-public enum DFError: Error {
+public enum CommonError: Error {
     /// 业务错误
     case biz(code: Int, msg: String)
     /// 未实现
