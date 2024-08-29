@@ -9,7 +9,7 @@ import CoreData
 import DFService
 struct PersistenceController {
     static var runtime: PersistenceController {
-        if ServiceValues[RuntimeService.self].isPreview {
+        if Application.shared[RuntimeService.self].isPreview {
             return Self.preview
         } else {
             return Self.shared

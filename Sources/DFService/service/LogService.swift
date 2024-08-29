@@ -48,7 +48,7 @@ public extension DFLogHandle {
 }
 
 
-public struct LogService: DFApiService {
+public struct LogService: DFServiceKey {
     public static var defaultValue: DFLogHandle {
         return MockApiServiceImpl()
     }

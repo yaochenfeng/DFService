@@ -70,14 +70,3 @@ public extension Router {
         return AnyView(builder(request))
     }
 }
-
-
-extension Router {
-    
-}
-
-extension EnvironmentValues {
-    var pageRouter: Router {
-        return serviceValues[RouteService.self]
-    }
-}

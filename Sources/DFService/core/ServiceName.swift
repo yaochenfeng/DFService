@@ -18,8 +18,8 @@ extension ServiceName: DFApiCall {
     @discardableResult
     public func callAsFunction(_ context: ApiCallConext) async throws -> Any {
         
-        guard let value = ServiceValues.shared.findBy(self) else {
-            throw DFError.unImplemented()
+        guard let value = Application.shared.findBy(self) else {
+            throw CommonError.unImplemented()
         }
         return try await value.callAsFunction(context)
     }

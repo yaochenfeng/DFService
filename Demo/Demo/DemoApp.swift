@@ -14,7 +14,7 @@ struct DemoApp: App {
         appService.bootstrap(.eager)
     }
     @ObservedObject
-    var appService = ServiceValues[AppService.self]
+    var appService = Application.shared
     @SceneBuilder
     public var body: some Scene {
         WindowGroup {
@@ -22,11 +22,11 @@ struct DemoApp: App {
                 .chain { view in
                     if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
                         view.task {
-                            appService.bootstrap(.root)
+                            appService.bootstrap(.splash)
                         }
                     } else {
                         view.onAppear {
-                            appService.bootstrap(.root)
+                            appService.bootstrap(.splash)
                         }
                     }
                 }
