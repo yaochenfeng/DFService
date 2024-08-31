@@ -1,16 +1,16 @@
 import SwiftUI
 
-public struct RouterView: View {
-    public init(router: Router = .shared) {
-        self._router = .init(wrappedValue: router)
+public struct RouterView<T: View>: View {
+    public init(rootView: T) {
+        self.rootView = rootView
     }
+    var rootView: T
     
-    @StateObject var router: Router
+    @EnvironmentObject var router: Router
     public var body: some View {
         if #available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *) {
             NavigationStack(path: $router.pagePath) {
-                router.page(router.rootPath)
-                
+                rootView
                     .navigationDestination(for: RouteRequest.self) { arg in
                         router.page(arg)
                     }
@@ -21,7 +21,7 @@ public struct RouterView: View {
             }
         } else {
             NavigationView {
-                router.page(router.rootPath)
+                rootView
                     .sheet(isPresented: router.sheetBind) {
                         getSheetView()
                     }
@@ -56,6 +56,8 @@ public struct RouterView: View {
 
 struct RouteNavigationViewPreview: PreviewProvider {
     static var previews: some View {
-        RouterView()
+       
+        
+        RouterView(rootView: Text("hello"))
     }
 }

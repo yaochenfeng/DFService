@@ -1,3 +1,5 @@
+import Foundation
+
 public class Router: ObservableObject {
     public enum RouteAction: Equatable, Hashable {
         case empty
@@ -48,15 +50,25 @@ public class Router: ObservableObject {
 }
 
 public extension Router {
+    @discardableResult
     func addPage(_ path: RoutePath,
              @ViewBuilder
-             builder:  @escaping (RouteRequest) -> some View) {
+             builder:  @escaping (RouteRequest) -> some View) -> Router {
         pageBuilderMap[path] = builder
+        if path == .root {
+            Thread.app.mainTask {
+                self.rootPath = RouteRequest(action: rootPath.routeAction, url: rootPath.url)
+            }
+            
+        }
+        return self
     }
+    @discardableResult
     func addAction(_ path: RoutePath,
              @ViewBuilder
-             builder:  @escaping (RouteRequest) -> Void) {
+             builder:  @escaping (RouteRequest) -> Void) -> Router {
         actionBuilderMap[path] = builder
+        return self
     }
     func page(_ request: RouteRequest) -> AnyView {
         if(!request.isHandle) {
@@ -65,8 +77,14 @@ public extension Router {
         }
         let pid = request.routePath
         guard let builder = pageBuilderMap[pid] else {
-            return AnyView(page404(request))
+            return AnyView(
+                page404(request)
+                .environmentObject(self)
+            )
         }
-        return AnyView(builder(request))
+        return AnyView(
+            builder(request)
+                .environmentObject(self)
+        )
     }
 }

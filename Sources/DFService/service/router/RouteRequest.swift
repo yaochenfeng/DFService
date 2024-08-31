@@ -9,7 +9,6 @@ public class RouteRequest: ObservableObject {
     public let url: URL?
     /// 参数
     public var param: Any?
-    public var options = [String: Any]()
     public var routeType = RouterType.push
     public required init(url: URL) {
         self.url = url
@@ -46,7 +45,7 @@ public extension Router.RoutePath {
 }
 extension RouteRequest: Hashable {
     public static func == (lhs: RouteRequest, rhs: RouteRequest) -> Bool {
-        return lhs.routeAction == rhs.routeAction && lhs.url == rhs.url
+        return lhs.routeAction == rhs.routeAction && lhs.url == rhs.url && ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(routePath)

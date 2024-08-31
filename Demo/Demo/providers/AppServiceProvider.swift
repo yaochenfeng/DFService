@@ -6,9 +6,6 @@ class AppServiceProvider: ServiceProvider {
             app.provider(provider)
         }
         super.register()
-        Router.shared.addPage(.root) { _ in
-            self.buildRoot()
-        }
         
         Router.shared.addPage(.detail) { req in
             let item = req.param as? Item ?? Item()
@@ -25,12 +22,6 @@ class AppServiceProvider: ServiceProvider {
     
     override var when: ProviderWhen {
         .eager
-    }
-    
-    override func performAsyncStartup() async {
-        DispatchQueue.main.async {
-//            self.app.rootView = AnyView(self.buildRoot())
-        }
     }
     
     
