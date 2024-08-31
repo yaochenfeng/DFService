@@ -4,8 +4,6 @@ public class Application {
     public static let version = "0.1.0"
     fileprivate static var _instance: Application?
     public var loadProviders: [DFService.ServiceProvider] = []
-    @Published
-    public var rootView: AnyView = AnyView(RouterView())
     private var storage: [FactoryKey: Any] = [:]
     private var serviceNames: [ServiceName: FactoryKey] = [:]
     public required init() {}
