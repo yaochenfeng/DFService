@@ -1,7 +1,12 @@
+#if canImport(UIKit)
+import UIKit
+#endif
 public struct RuntimeService: DFServiceKey {
     public static var defaultValue: Value = Value()
 
     public struct Value {}
+    
+    private static var uuid: String?
 }
 
 public extension RuntimeService.Value {
@@ -14,5 +19,33 @@ public extension RuntimeService.Value {
         #else
         return false
         #endif
+    }
+    
+    var deviceName: String {
+        #if canImport(UIKit)
+        return UIDevice.current.model
+        #else
+        return "unkown"
+        #endif
+    }
+    /// 设备id
+    var genDeviceId: String {
+        if let value = RuntimeService.uuid {
+            return value
+        }
+#if canImport(UIKit)
+        let value = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+#else
+        let value = UUID().uuidString
+#endif
+        RuntimeService.uuid = value
+        return value
+       
+    }
+}
+
+public extension Application {
+    var runtime: RuntimeService.Value {
+        return self[RuntimeService.self]
     }
 }

@@ -57,7 +57,7 @@ public extension Router {
         pageBuilderMap[path] = builder
         if path == .root {
             Thread.app.mainTask {
-                self.rootPath = RouteRequest(action: rootPath.routeAction, url: rootPath.url)
+                self.rootPath = self.rootPath.copy
             }
             
         }
@@ -79,12 +79,10 @@ public extension Router {
         guard let builder = pageBuilderMap[pid] else {
             return AnyView(
                 page404(request)
-                .environmentObject(self)
             )
         }
         return AnyView(
             builder(request)
-                .environmentObject(self)
         )
     }
 }
