@@ -37,6 +37,12 @@ public extension RouteRequest {
             return .page404
         }
     }
+    
+    var copy: RouteRequest {
+        let new = RouteRequest(action: routeAction, url: url)
+        new.param = param
+        return new
+    }
 }
 public extension Router.RoutePath {
     var request: RouteRequest {

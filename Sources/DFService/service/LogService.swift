@@ -81,3 +81,10 @@ extension MockApiServiceImpl: DFLogHandle {
         .debug
     }
 }
+
+
+public extension Application {
+    var log: DFLogHandle {
+        return self[LogService.self]
+    }
+}

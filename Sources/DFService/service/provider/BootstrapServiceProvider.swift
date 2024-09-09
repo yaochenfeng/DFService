@@ -11,7 +11,9 @@ actor Bootstrap {
     }
     
     func bootstrap(_ when: ServiceProvider.ProviderWhen) async {
-        target = when
+        if(target < when) {
+            target = when
+        }
         await bootIfNeed()
     }
     
@@ -21,7 +23,7 @@ actor Bootstrap {
         }
         let currentProviders = app.loadProviders.filter { provider in
             return !provider.isBooted && provider.when <= current
-        }
+        }.sorted()
         
         guard !currentProviders.isEmpty else {
             if current < target {
@@ -82,6 +84,10 @@ class BootstrapServiceProvider: ServiceProvider {
     
     override var when: ServiceProvider.ProviderWhen {
         return .eager
+    }
+    
+    override var sortIndex: Int {
+        return 0
     }
 }
 

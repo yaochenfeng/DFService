@@ -57,7 +57,7 @@ public extension Router {
         pageBuilderMap[path] = builder
         if path == .root {
             Thread.app.mainTask {
-                self.rootPath = RouteRequest(action: rootPath.routeAction, url: rootPath.url)
+                self.rootPath = self.rootPath.copy
             }
             
         }

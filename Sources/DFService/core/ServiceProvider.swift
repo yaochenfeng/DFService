@@ -1,3 +1,4 @@
+import Foundation
 /// 应用内服务提供者
 /// 在应用不同时机启动服务
 open class ServiceProvider {
@@ -24,6 +25,10 @@ open class ServiceProvider {
         return .splash
     }
     
+    open var sortIndex: Int {
+        return 1_000
+    }
+    
     var name: String {
         return Self.name
     }
@@ -39,7 +44,13 @@ extension ServiceProvider: Equatable {
     }
 }
 
-extension ServiceProvider: Identifiable {
+//extension ServiceProvider: Identifiable {
+//
+//}
+extension ServiceProvider: Comparable {
+    public static func < (lhs: ServiceProvider, rhs: ServiceProvider) -> Bool {
+        return lhs.sortIndex < rhs.sortIndex
+    }
     
 }
 
