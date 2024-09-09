@@ -79,12 +79,10 @@ public extension Router {
         guard let builder = pageBuilderMap[pid] else {
             return AnyView(
                 page404(request)
-                .environmentObject(self)
             )
         }
         return AnyView(
             builder(request)
-                .environmentObject(self)
         )
     }
 }
