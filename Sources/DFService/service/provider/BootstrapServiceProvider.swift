@@ -36,9 +36,6 @@ actor Bootstrap {
             return
         }
         self.isRunning = true
-        defer {
-            self.isRunning = false
-        }
         for provider in currentProviders where !provider.isBooted {
             let start_time = CFAbsoluteTimeGetCurrent()
             var success = false
@@ -56,7 +53,7 @@ actor Bootstrap {
                 return
             }
         }
-        
+        self.isRunning = false
         await bootIfNeed()
     }
 }
