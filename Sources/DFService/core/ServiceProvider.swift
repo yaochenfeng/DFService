@@ -17,7 +17,7 @@ open class ServiceProvider {
     }
     
     /// 模拟异步关闭逻辑
-    open func performAsyncShutdown() async throws {
+    open func performAsyncShutdown() async {
         // 重写此方法以实现实际的异步关闭逻辑
 //        try await Task.sleep(nanoseconds: 1_000_000_000) // 模拟1秒的异步关闭
     }
@@ -44,11 +44,11 @@ extension ServiceProvider: Equatable {
     }
 }
 
-//extension ServiceProvider: Identifiable {
-//
-//}
 extension ServiceProvider: Comparable {
     public static func < (lhs: ServiceProvider, rhs: ServiceProvider) -> Bool {
+        if lhs.when != rhs.when {
+            return lhs.when.rawValue < rhs.when.rawValue
+        }
         return lhs.sortIndex < rhs.sortIndex
     }
     
