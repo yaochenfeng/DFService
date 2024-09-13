@@ -16,6 +16,30 @@ actor Bootstrap {
         }
         await bootIfNeed()
     }
+    func reset(_ when: ServiceProvider.ProviderWhen) async {
+        guard let app = app, current > when else {
+            return
+        }
+        let bootProviders = app.loadProviders.filter { provider in
+            return provider.isBooted && provider.when > current
+        }.sorted()
+        self.isRunning = true
+        current = when
+        for provider in bootProviders {
+            let start_time = CFAbsoluteTimeGetCurrent()
+            var success = false
+            defer {
+                let end_time = CFAbsoluteTimeGetCurrent()
+                let cost_time = (end_time - start_time) * 1000
+                app[LogService.self].debug("\(provider.name) 停止服务\(success)用时: \(cost_time)毫秒")
+            }
+            await provider.performAsyncShutdown()
+            provider.isBooted = false
+            success = true
+        }
+        self.isRunning = false
+        await bootIfNeed()
+    }
     
     func bootIfNeed() async {
         guard let app = app else {
@@ -76,7 +100,9 @@ class BootstrapServiceProvider: ServiceProvider {
     }
     
     func reset(_ when: ProviderWhen) {
-        
+        Task(priority: .userInitiated){
+            await bootstrap.reset(when)
+        }
     }
     
     override var when: ServiceProvider.ProviderWhen {
@@ -112,7 +138,7 @@ public extension Application {
     }
     /// 重置启动，执行provider Shutdown
     func reset(_ when: ServiceProvider.ProviderWhen) {
-        provider(BootstrapServiceProvider.self).bootstrap(when)
+        provider(BootstrapServiceProvider.self).reset(when)
     }
     
 }
