@@ -1,4 +1,3 @@
-import OSLog
 public protocol DFLogHandle {
     func log(level: LogService.Level,
              message:  @autoclosure () -> String,
@@ -9,26 +8,15 @@ public protocol DFLogHandle {
     var logLevel: LogService.Level { get }
 }
 
-internal let logger = Logger(subsystem: Bundle.app.id, category: "df")
-
 public extension DFLogHandle {
     func log(level: LogService.Level,
              message: @autoclosure () -> String,
              file: String = #fileID,
              function: String = #function,
              line: UInt = #line) {
-        guard logLevel >= level else { return }
+        guard level >= logLevel else { return }
         let msg = "\(level) - \(file):\(line) - \(function) - \(message())"
-        switch level {
-        case .debug:
-            logger.debug("\(msg)")
-        case .info:
-            logger.info("\(msg)")
-        case .warning:
-            logger.warning("\(msg)")
-        case .error:
-            logger.error("\(msg)")
-        }
+        debugPrint(msg)
     }
     
     func debug(_ message: @autoclosure () -> String,

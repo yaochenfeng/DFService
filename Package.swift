@@ -30,8 +30,8 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "DFService",
-            dependencies: [
-//                .product(name: "Factory", package: "Factory")
+            resources: [
+                .process("Resources/Assets.xcassets")
             ]
         ),
         .testTarget(
