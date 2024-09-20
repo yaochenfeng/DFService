@@ -74,6 +74,7 @@ actor Bootstrap {
                 success = true
             } catch {
                 app[LogService.self].warning("\(provider.name) 启动失败\(error)")
+                self.isRunning = false
                 return
             }
         }
