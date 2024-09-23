@@ -9,9 +9,16 @@ class AppServiceProvider: ServiceProvider {
         
         Router.shared.addPage(.detail) { req in
             let item = req.param as? Item ?? Item()
-            let timestap = item.timestamp ?? Date()
-            Text("Select an item \(timestap)")
+//            let timestap = item.timestamp ?? Date()
+            Text("Select an item")
+                .navigationTitle("标题")
         }
+        .addPage(.demo) { req in
+            DemoPage()
+        }.addPage(.web) { req in
+            WebView(req.url?.absoluteString ?? "")
+        }
+        
     }
 
     var appProvider: [ServiceProvider.Type] {

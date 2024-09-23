@@ -1,5 +1,5 @@
 
-public class RouteRequest: ObservableObject {
+public final class RouteRequest: ObservableObject {
     public enum RouterType {
         case push
         case present

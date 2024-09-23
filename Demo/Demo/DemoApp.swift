@@ -64,5 +64,6 @@ struct SceneContent: View {
     @ViewBuilder
     var body: some View {
         RoutePage(router.rootPath)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

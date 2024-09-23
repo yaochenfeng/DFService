@@ -56,8 +56,8 @@ public struct RouterView<T: View>: View {
 
 struct RouteNavigationViewPreview: PreviewProvider {
     static var previews: some View {
-       
         
         RouterView(rootView: Text("hello"))
+            .environmentObject(Router.shared)
     }
 }

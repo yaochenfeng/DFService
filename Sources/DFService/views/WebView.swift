@@ -11,6 +11,8 @@ open class WebController: ObservableObject {
     @Published
     public var progress: Double = 0
     @Published
+    public var title: String? = nil
+    @Published
     public var isLoading = false
     
 }
@@ -28,7 +30,9 @@ public struct WebView: PlatformRepresentable {
     public func makeView(context: Context) -> WKWebView {
         let web = context.coordinator.webView
         if let req = request {
-            web.load(req)
+            DispatchQueue.main.async {
+                web.load(req)
+            }
         }
         return web
     }
@@ -70,6 +74,11 @@ extension WebView.Coordinator {
         webView.publisher(for: \.isLoading)
             .receive(on: DispatchQueue.main)
             .assign(to: &controller.$isLoading)
+        
+        webView.publisher(for: \.title)
+            .receive(on: DispatchQueue.main)
+            
+            .assign(to: &controller.$title)
         
         webView.uiDelegate = self
         webView.navigationDelegate = self

@@ -4,17 +4,17 @@ public struct WebPage: View {
     public init(_ request: URLRequest?) {
         self.request = request
     }
-    @ObservedObject
+    @StateObject
     var controller = WebController()
     let request: URLRequest?
     public var body: some View {
-        ZStack(alignment: .topLeading){
+        ZStack(alignment: .topLeading) {
             WebView(request, controller: controller)
-            if controller.progress < 1 {
-                ProgressView(value: controller.progress)
-                    .progressViewStyle(.linear)
-            }
+            
+            ProgressView(value: controller.progress)
+                .progressViewStyle(.linear)
         }
+        .navigationTitle(Text(controller.title ?? ""))
     }
 }
 public extension WebPage {

@@ -10,7 +10,6 @@ import SwiftUI
 struct SettingPage: View {
     var body: some View {
         Text("Hello, Setting!")
-            .navigationBarTitle("设置页面", displayMode: .inline)
     }
 }
 

@@ -16,9 +16,14 @@ class RouteServiceProvider: ServiceProvider {
         
        
         if !app.state.agreePrivacy {
-            app[RouteService.self].addPage(.root) { req in
-                PrivacyPage()
-            }
+            await MainActor.run {
+                app[RouteService.self].addPage(.root) { req in
+                    NavigationPage {
+                        PrivacyPage()
+                    }
+                }
+             }
+        
             throw CommonError.biz(code: 401, msg: "未同意")
         } else if !app.state.isLogin {
             app[RouteService.self].addPage(.root) { req in
@@ -28,7 +33,9 @@ class RouteServiceProvider: ServiceProvider {
         } else {
            await MainActor.run {
                 app[RouteService.self].addPage(.root) { req in
-                    RouterView(rootView: SettingPage())
+                    NavigationPage {
+                        DemoPage()
+                    }
                 }
             }
             

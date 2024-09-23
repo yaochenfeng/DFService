@@ -16,3 +16,14 @@ public extension EnvironmentValues {
         }
     }
 }
+
+public extension Application {
+    var router: Router {
+        get {
+            self[RouteService.self]
+        }
+        set {
+            self[RouteService.self] = newValue
+        }
+    }
+}

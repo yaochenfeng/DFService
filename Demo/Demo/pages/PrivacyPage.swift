@@ -5,7 +5,7 @@
 //  Created by yaochenfeng on 2024/8/31.
 //
 
-import SwiftUI
+import DFService
 
 struct PrivacyPage: View {
     @Environment(\.application) var app
@@ -17,6 +17,14 @@ struct PrivacyPage: View {
                 app.bootstrap(.window)
             } label: {
                 Text("同意隐私协议")
+            }
+            
+            Button {
+                let req = RouteRequest(action: .page(.web), url: URL(string: "https://m.baidu.com"))
+                req.routeType = .present
+                app.router.go(req)
+            } label: {
+                Text("阅读隐私协议")
             }
 
         }.padding()
