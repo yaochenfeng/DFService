@@ -15,6 +15,7 @@ public struct RoutePage: View {
     @Environment(\.router) var router
     public var body: some View {
         router.page(request)
+            .environment(\.routeRequest, request)
     }
 }
 

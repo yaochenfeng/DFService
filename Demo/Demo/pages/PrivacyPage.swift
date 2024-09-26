@@ -20,9 +20,8 @@ struct PrivacyPage: View {
             }
             
             Button {
-                let req = RouteRequest(action: .page(.web), url: URL(string: "https://m.baidu.com"))
-                req.routeType = .present
-                app.router.go(req)
+                PageEnum.web.go(url: URL(string: "https://m.baidu.com") ,
+                                routeType: .present)
             } label: {
                 Text("阅读隐私协议")
             }

@@ -1,28 +1,35 @@
 import SwiftUI
 
 public struct WebPage: View {
-    public init(_ request: URLRequest?) {
+    let request: RouteRequest
+    public init(_ request: RouteRequest) {
         self.request = request
     }
     @StateObject
     var controller = WebController()
-    let request: URLRequest?
+    
     public var body: some View {
-        ZStack(alignment: .topLeading) {
-            WebView(request, controller: controller)
-            
-            ProgressView(value: controller.progress)
-                .progressViewStyle(.linear)
+        PageLayout {
+            ZStack(alignment: .topLeading) {
+                if let url = request.url {
+                    WebView(URLRequest(url: url), controller: controller)
+                }
+                if controller.progress != 1 {
+                    ProgressView(value: controller.progress)
+                        .progressViewStyle(.linear)
+                }
+            }
+        }.pagBar {
+            PageBar(controller.title ?? "")
         }
-        .navigationTitle(Text(controller.title ?? ""))
     }
 }
 public extension WebPage {
     init(_ string: String) {
         if let url = string.app.url {
-            self.init(URLRequest(url: url))
+            self.init(.init(url: url))
         } else {
-            self.init(nil)
+            self.init(.init(action: .empty))
         }
     }
 }

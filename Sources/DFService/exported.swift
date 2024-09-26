@@ -38,7 +38,9 @@ public extension PlatformRepresentable {
         makeView(context: context)
     }
     
-    func updateNSView(_ nsView: PlatformView, context: Context) {}
+    func updateNSView(_ nsView: PlatformView, context: Context) {
+        
+    }
 }
 
 public class RouterController {

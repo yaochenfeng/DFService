@@ -7,17 +7,6 @@ class AppServiceProvider: ServiceProvider {
         }
         super.register()
         
-        Router.shared.addPage(.detail) { req in
-            let item = req.param as? Item ?? Item()
-//            let timestap = item.timestamp ?? Date()
-            Text("Select an item")
-                .navigationTitle("标题")
-        }
-        .addPage(.demo) { req in
-            DemoPage()
-        }.addPage(.web) { req in
-            WebView(req.url?.absoluteString ?? "")
-        }
         
     }
 
@@ -29,12 +18,5 @@ class AppServiceProvider: ServiceProvider {
     
     override var when: ProviderWhen {
         .eager
-    }
-    
-    
-    @ViewBuilder
-    func buildRoot() -> some View {
-        ContentView()
-            .environment(\.managedObjectContext, PersistenceController.runtime.container.viewContext)
     }
 }

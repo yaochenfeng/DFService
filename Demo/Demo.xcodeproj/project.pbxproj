@@ -10,7 +10,6 @@
 		8F20EA202C778B4900A2737C /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F20EA1F2C778B4900A2737C /* DemoApp.swift */; };
 		8F20EA222C778B4900A2737C /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F20EA212C778B4900A2737C /* Persistence.swift */; };
 		8F20EA252C778B4900A2737C /* Demo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8F20EA232C778B4900A2737C /* Demo.xcdatamodeld */; };
-		8F20EA272C778B4900A2737C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F20EA262C778B4900A2737C /* ContentView.swift */; };
 		8F20EA292C778B4C00A2737C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F20EA282C778B4C00A2737C /* Assets.xcassets */; };
 		8F20EA2D2C778B4C00A2737C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F20EA2C2C778B4C00A2737C /* Preview Assets.xcassets */; };
 		8F20EA392C778D6B00A2737C /* DFService in Frameworks */ = {isa = PBXBuildFile; productRef = 8F20EA382C778D6B00A2737C /* DFService */; };
@@ -28,7 +27,6 @@
 		8F20EA1F2C778B4900A2737C /* DemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		8F20EA212C778B4900A2737C /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		8F20EA242C778B4900A2737C /* Demo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Demo.xcdatamodel; sourceTree = "<group>"; };
-		8F20EA262C778B4900A2737C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8F20EA282C778B4C00A2737C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8F20EA2A2C778B4C00A2737C /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
 		8F20EA2C2C778B4C00A2737C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -79,7 +77,6 @@
 				8F20EA3A2C77AED800A2737C /* providers */,
 				8F20EA1F2C778B4900A2737C /* DemoApp.swift */,
 				8F20EA212C778B4900A2737C /* Persistence.swift */,
-				8F20EA262C778B4900A2737C /* ContentView.swift */,
 				8F20EA282C778B4C00A2737C /* Assets.xcassets */,
 				8F20EA2A2C778B4C00A2737C /* Demo.entitlements */,
 				8F20EA232C778B4900A2737C /* Demo.xcdatamodeld */,
@@ -211,7 +208,6 @@
 				8F20EA252C778B4900A2737C /* Demo.xcdatamodeld in Sources */,
 				8F20EA3C2C77AEFA00A2737C /* RouteServiceProvider.swift in Sources */,
 				8F20EA202C778B4900A2737C /* DemoApp.swift in Sources */,
-				8F20EA272C778B4900A2737C /* ContentView.swift in Sources */,
 				8FFB2AEC2C824E6B00A49BB1 /* AppStorage.swift in Sources */,
 				8F20EA222C778B4900A2737C /* Persistence.swift in Sources */,
 				8FFB2AEE2C824FE900A49BB1 /* LoginPage.swift in Sources */,

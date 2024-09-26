@@ -4,23 +4,33 @@ class RouteServiceProvider: ServiceProvider {
     
     override func register() {
         app[RouteService.self, SceneEnum.setting.rawValue] = Router()
-        app[RouteService.self, SceneEnum.setting.rawValue].addPage(.root) { req in
-                self.buildRoot()
-            
+        
+        PageEnum.allCases.forEach { value in
+            switch value {
+                
+            case .detail:
+                Router.shared.addPage(value.routePath) { req in
+                    Text("Select an item")
+                        .navigationTitle("标题")
+                }
+            case .demo:
+                Router.shared.addPage(value.routePath) { req in
+                    DemoPage()
+                }
+            case .web:
+                Router.shared.addPage(value.routePath) { req in
+                    WebPage(req.url?.absoluteString ?? "https://m.baidu.com")
+                }
+            }
         }
+        
     }
     override func performAsyncStartup() async  throws {
-//        app.rootView = AnyView(buildRoot())
-//        throw CommonError.unImplemented()
         app[LogService.self].error("错误")
-        
-       
         if !app.state.agreePrivacy {
-            await MainActor.run {
+            _ = await MainActor.run {
                 app[RouteService.self].addPage(.root) { req in
-                    NavigationPage {
-                        PrivacyPage()
-                    }
+                    PrivacyPage()
                 }
              }
         
@@ -31,14 +41,11 @@ class RouteServiceProvider: ServiceProvider {
             }
             throw CommonError.biz(code: 401, msg: "未同意")
         } else {
-           await MainActor.run {
-                app[RouteService.self].addPage(.root) { req in
-                    NavigationPage {
-                        DemoPage()
-                    }
-                }
+            app[RouteService.self].addPage(.root) { req in
+//                    NavigationPage {
+                    DemoPage()
+//                    }
             }
-            
         }
         
     }
@@ -56,6 +63,21 @@ class RouteServiceProvider: ServiceProvider {
     }
 }
 
-extension Router.RoutePath {
-    static let detail =  Router.RoutePath(rawValue: "page/detail")
+
+enum PageEnum: String, CaseIterable {
+    case detail
+    case demo
+    case web
+    
+    var routePath: Router.RoutePath {
+        return Router.RoutePath(rawValue: "page/\(rawValue)")
+    }
+    
+    func go(router:Router = .shared,
+            url: URL? = nil,
+            routeType: RouteRequest.RouterType = .push) {
+        let request = RouteRequest(page: routePath, url: url)
+        request.routeType = routeType
+        router.go(request)
+    }
 }

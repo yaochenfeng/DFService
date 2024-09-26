@@ -1,18 +1,6 @@
 import SwiftUI
 extension Router {
-    fileprivate func handlePage(_ request: RouteRequest) {
-        if(request.routePath == .root) {
-            popToRoot()
-            self.rootPath = request
-            return
-        }
-        switch request.routeType {
-        case .push:
-            pagePath.append(request)
-        case .present:
-            presentingSheet = request
-        }
-    }
+    
     public func handleAction(_ request: RouteRequest) {
         guard let builder = self.actionBuilderMap[request.routePath] else {
             return
@@ -61,5 +49,14 @@ public extension Router {
         if let handler = customHandlerPopRoot {
             return handler(.init(page: .root))
         }
+    }
+    
+    func canPop() -> Bool {
+        if  let _ = presentingSheet {
+            return true
+        } else if !pagePath.isEmpty {
+            return true
+        }
+        return false
     }
 }

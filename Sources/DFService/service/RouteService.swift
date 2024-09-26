@@ -5,6 +5,11 @@ public struct RouteService: DFServiceKey, EnvironmentKey {
     }
 }
 
+struct CurrentRequestKey: DFServiceKey, EnvironmentKey {
+    public static var defaultValue: RouteRequest {
+        return RouteRequest.init(action: .empty)
+    }
+}
 
 public extension EnvironmentValues {
     var router: Router {
@@ -13,6 +18,15 @@ public extension EnvironmentValues {
         }
         set {
             self[RouteService.self] = newValue
+        }
+    }
+    
+    var routeRequest: RouteRequest {
+        get {
+            self[CurrentRequestKey.self]
+        }
+        set {
+            self[CurrentRequestKey.self] = newValue
         }
     }
 }

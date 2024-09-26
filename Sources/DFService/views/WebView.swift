@@ -1,6 +1,5 @@
 
 import SwiftUI
-
 open class WebController: ObservableObject {
     public init() {}
     
@@ -55,6 +54,7 @@ public extension WebView {
     class Coordinator: NSObject {
         let controller: WebController
         let webView: WKWebView
+        
         @Injected(LogService.self)
         var logger
         required init(_ controller: WebController) {
@@ -77,7 +77,6 @@ extension WebView.Coordinator {
         
         webView.publisher(for: \.title)
             .receive(on: DispatchQueue.main)
-            
             .assign(to: &controller.$title)
         
         webView.uiDelegate = self

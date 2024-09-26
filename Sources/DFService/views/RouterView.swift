@@ -1,5 +1,7 @@
 import SwiftUI
 
+@available(iOS, unavailable, message: "NavigationPage replace")
+@available(macOS, unavailable, message: "NavigationPage replace")
 public struct RouterView<T: View>: View {
     public init(rootView: T) {
         self.rootView = rootView
@@ -51,13 +53,5 @@ public struct RouterView<T: View>: View {
         } else {
             EmptyView()
         }
-    }
-}
-
-struct RouteNavigationViewPreview: PreviewProvider {
-    static var previews: some View {
-        
-        RouterView(rootView: Text("hello"))
-            .environmentObject(Router.shared)
     }
 }

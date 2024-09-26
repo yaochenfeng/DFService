@@ -11,18 +11,22 @@ struct DemoPage: View {
     @Environment(\.router)
     var router
     var body: some View {
-        List {
-            ForEach(RouteRequest.allCases) { req in
-                Text("\(req.routePath.rawValue)").onTapGesture {
-                    router.go(req)
+        PageLayout {
+            List {
+                ForEach(RouteRequest.allCases) { req in
+                    Text("\(req.routePath.rawValue)").onTapGesture {
+                        router.go(req)
+                    }
+                }
+                Text("返回").onTapGesture {
+                    router.pop()
+                }
+                Text("返回首页").onTapGesture {
+                    router.popToRoot()
                 }
             }
-            Text("返回").onTapGesture {
-                router.pop()
-            }
-            Text("返回首页").onTapGesture {
-                router.popToRoot()
-            }
+        }.pagBar {
+            PageBar("demo")
         }
     }
 }
@@ -33,22 +37,18 @@ struct DemoPage_Previews: PreviewProvider {
     }
 }
 
-extension Router.RoutePath {
-    static let demo = Router.RoutePath(rawValue: "page/demo")
-    static let web = Router.RoutePath(rawValue: "page/web")
-}
-
 extension RouteRequest: CaseIterable, Identifiable {
     public static var allCases: [DFService.RouteRequest] {
         [
-            Router.RoutePath.root,
-            .demo,
-            .detail,
-            .page404
+            Router.RoutePath.root
         ]
             .map { path in
                 return path.request
             }
+        
+        + PageEnum.allCases.map({ value in
+            return value.routePath.request
+        })
     }
 
 }

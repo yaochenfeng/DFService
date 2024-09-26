@@ -18,12 +18,12 @@ struct DemoApp: App {
     init() {
         app.bootstrap(.eager)
     }
-    @ObservedObject
-    var app = Application.shared
+    @Environment(\.application)
+    var app
     @SceneBuilder
     public var body: some Scene {
         WindowGroup() {
-            SceneContent(.main, router: app[RouteService.self, SceneEnum.main.rawValue])
+            SceneContent(.main)
                 .environmentObject(app)
                 .environment(\.router, app[RouteService.self, SceneEnum.main.rawValue])
         }.onChange(of: scenePhase) { newValue in
@@ -41,9 +41,7 @@ struct DemoApp: App {
         
         #if os(macOS)
         Settings {
-            SceneContent(.setting, router: app[RouteService.self, SceneEnum.setting.rawValue])
-                .environmentObject(app)
-                .environment(\.router, app[RouteService.self, SceneEnum.setting.rawValue])
+            SceneContent(.setting)
         }
         #endif
     }
@@ -51,19 +49,17 @@ struct DemoApp: App {
 
 struct SceneContent: View {
     let id: SceneEnum
-    @ObservedObject
-    var router: Router
-//    @Environment(\.self)
-//    var envValues
-//    @Environment(\.router) var envRouter
-    init(_ id: SceneEnum, router: Router) {
+    @Environment(\.application) var app
+    init(_ id: SceneEnum) {
         self.id = id
-        self._router = .init(wrappedValue: router)
     }
     
     @ViewBuilder
     var body: some View {
-        RoutePage(router.rootPath)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        NavigationPage(router:  app[RouteService.self, id.rawValue])
+            .onAppear {
+                app.bootstrap(.window)
+            }
+            
     }
 }

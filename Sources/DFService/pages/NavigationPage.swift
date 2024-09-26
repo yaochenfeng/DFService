@@ -1,42 +1,68 @@
 public struct NavigationPage: View {
-    let rootView: AnyView
-    @ObservedObject
+    @StateObject
     var router: Router
     
-    public init(router: Router = .shared, @ViewBuilder builder: () -> some View) {
-        _router = .init(initialValue: router)
-        rootView = AnyView(builder())
+    public init(router: Router = .shared) {
+        _router = .init(wrappedValue: router)
     }
     public var body: some View {
         if #available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *) {
             NavigationStack(path: $router.pagePath) {
-                rootView
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                RoutePage(router.rootPath)
+                    .navigationDestination(for: RouteRequest.self) { arg in
+                        RoutePage(arg)
+                    }
+                
+                    .navigationDestination(isPresented: router.sheetBind) {
+                        getSheetView()
+                    }
+            }
+            .environment(\.router, router)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         else if Bool.app.uikit {
-            Navigation(rootView: rootView)
+            Navigation(rootView: router.page(router.rootPath))
                 .environment(\.router, router)
         }
         else {
             ZStack(alignment: .topLeading) {
-                rootView
+                router.page(router.rootPath)
+                    .environment(\.routeRequest, router.rootPath)
+                    .sheet(isPresented: router.sheetBind) {
+                        getSheetView()
+                    }
                 if let req = router.pagePath.last {
                     router.page(req)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.white)
+                        .environment(\.routeRequest, req)
                 }
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+            }
+            .environment(\.router, router)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+    
+    @ViewBuilder
+    func getSheetView() -> some View {
+        
+        if let request = router.presentingSheet {
+            router.page(request)
+                .environment(\.routeRequest, request)
+        } else {
+            EmptyView()
         }
     }
 }
 
-struct NavigationPage_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationPage {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        }.environmentObject(Router.shared)
-    }
-}
+//struct NavigationPage_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationPage {
+//            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+//        }.environmentObject(Router.shared)
+//    }
+//}
 #if canImport(UIKit)
 import UIKit
 extension NavigationPage {
@@ -71,7 +97,9 @@ class RouterNavigationController: UINavigationController {
         super.viewDidLoad()
         router.customHandlerGo = { [weak self] req in
             guard let self = self else { return }
-            let controller = UIHostingController(rootView: RoutePage(req).environment(\.self, self.environment))
+            let rootView = RoutePage(req)
+                .environment(\.self, self.environment)
+            let controller = UIHostingController(rootView: rootView)
             if req.routeType == .push {
                 self.pushViewController(controller, animated: true)
             } else if req.routeType == .present {
