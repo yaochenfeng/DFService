@@ -1,5 +1,7 @@
 
 import SwiftUI
+
+#if canImport(WebKit)
 open class WebController: ObservableObject {
     public init() {}
     
@@ -15,6 +17,8 @@ open class WebController: ObservableObject {
     public var isLoading = false
     
 }
+
+
 import WebKit
 
 public struct WebView: PlatformRepresentable {
@@ -114,3 +118,4 @@ struct WebView_Previews: PreviewProvider {
         WebView("https://m.baidu.com")
     }
 }
+#endif

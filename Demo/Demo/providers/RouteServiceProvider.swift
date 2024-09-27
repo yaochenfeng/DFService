@@ -10,8 +10,9 @@ class RouteServiceProvider: ServiceProvider {
                 
             case .detail:
                 Router.shared.addPage(value.routePath) { req in
-                    Text("Select an item")
-                        .navigationTitle("标题")
+                    PageLayout {
+                        Text("Select an item")
+                    }.pagBar(title: "标题")
                 }
             case .demo:
                 Router.shared.addPage(value.routePath) { req in
@@ -28,12 +29,10 @@ class RouteServiceProvider: ServiceProvider {
     override func performAsyncStartup() async  throws {
         app[LogService.self].error("错误")
         if !app.state.agreePrivacy {
-            _ = await MainActor.run {
-                app[RouteService.self].addPage(.root) { req in
-                    PrivacyPage()
-                }
-             }
-        
+            app[RouteService.self].addPage(.root) { req in
+                PrivacyPage()
+            }
+            
             throw CommonError.biz(code: 401, msg: "未同意")
         } else if !app.state.isLogin {
             app[RouteService.self].addPage(.root) { req in
@@ -42,9 +41,7 @@ class RouteServiceProvider: ServiceProvider {
             throw CommonError.biz(code: 401, msg: "未同意")
         } else {
             app[RouteService.self].addPage(.root) { req in
-//                    NavigationPage {
-                    DemoPage()
-//                    }
+                DemoPage()
             }
         }
         
@@ -54,7 +51,7 @@ class RouteServiceProvider: ServiceProvider {
     }
     
     
-
+    
     
     @ViewBuilder
     func buildRoot() -> some View {

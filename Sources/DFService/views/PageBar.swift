@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct PageBar: View {
     @Environment(\.router) var router
+    @Environment(\.routeRequest) var request
     
     private var titleView: AnyView
     private var backgroundView: AnyView
@@ -28,7 +29,7 @@ public struct PageBar: View {
                         Button {
                             router.pop()
                         } label: {
-                            Image(systemName: "chevron.left")
+                            Image(systemName: backName)
                         }
 
                     }
@@ -63,6 +64,11 @@ public struct PageBar: View {
             self.trailingView = AnyView(trailingView())
             self.showBack = showBack
     }
+    
+    
+    private var backName: String {
+        request.routeType == .present ? "xmark.circle.fill" : "chevron.left"
+    }
 }
 
 public extension PageBar {
@@ -71,6 +77,7 @@ public extension PageBar {
         self.init (showBack: showBack){
             Text(title)
                 .font(.title3)
+                .lineLimit(1)
         } backgroundView: {
             backgroundColor
         } leadingView: {

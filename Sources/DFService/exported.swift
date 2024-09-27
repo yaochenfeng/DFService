@@ -20,7 +20,7 @@ public extension PlatformRepresentable {
     func updateUIView(_ uiView: PlatformView, context: Context) {}
 }
 
-public typealias RouterController = UINavigationController
+public typealias RouterNavigationController = UINavigationController
 #elseif canImport(AppKit)
 import AppKit
 
@@ -43,12 +43,12 @@ public extension PlatformRepresentable {
     }
 }
 
-public class RouterController {
+public class RouterNavigationController {
     
 }
 #else
 
-public class RouterController {
+public class RouterNavigationController {
     
 }
 #endif

@@ -20,9 +20,9 @@ public class Router: ObservableObject {
     public typealias ActionBuilder = (RouteRequest) -> Void
     public static let shared = Router()
     /// 自定义go实现
-    public var customHandlerGo: ActionBuilder?
-    public var customHandlerPop: ActionBuilder?
-    public var customHandlerPopRoot: ActionBuilder?
+    internal var customHandlerGo: ActionBuilder?
+    internal var customHandlerPop: ActionBuilder?
+    internal var customHandlerPopRoot: ActionBuilder?
     public var handler:(RouteRequest) -> RouteAction = { _ in
         return .empty
     }
@@ -51,7 +51,7 @@ public class Router: ObservableObject {
 
     }
     
-    weak var controller: RouterController?
+    weak var controller: RouterNavigationController?
 }
 
 public extension Router {

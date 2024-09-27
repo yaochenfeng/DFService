@@ -5,6 +5,7 @@ public struct WebPage: View {
     public init(_ request: RouteRequest) {
         self.request = request
     }
+    #if canImport(WebKit)
     @StateObject
     var controller = WebController()
     
@@ -23,6 +24,12 @@ public struct WebPage: View {
             PageBar(controller.title ?? "")
         }
     }
+    #else
+    
+    public var body: some View {
+        EmptyView()
+    }
+    #endif
 }
 public extension WebPage {
     init(_ string: String) {

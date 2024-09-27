@@ -10,23 +10,25 @@ import DFService
 struct PrivacyPage: View {
     @Environment(\.application) var app
     var body: some View {
-        VStack {
-            Text("隐私协议")
-            Button {
-                app.state.agreePrivacy = true
-                app.bootstrap(.window)
-            } label: {
-                Text("同意隐私协议")
-            }
-            
-            Button {
-                PageEnum.web.go(url: URL(string: "https://m.baidu.com") ,
-                                routeType: .present)
-            } label: {
-                Text("阅读隐私协议")
-            }
-
-        }.padding()
+        PageLayout {
+            VStack {
+                Text("隐私协议")
+                Button {
+                    app.state.agreePrivacy = true
+                    app.bootstrap(.window)
+                } label: {
+                    Text("同意隐私协议")
+                }
+                
+                Button {
+                    PageEnum.web.go(url: URL(string: "https://m.baidu.com") ,
+                                    routeType: .present)
+                } label: {
+                    Text("阅读隐私协议")
+                }
+                
+            }.padding()
+        }
         
     }
 }

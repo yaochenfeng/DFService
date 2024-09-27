@@ -5,12 +5,15 @@ public struct PageLayout<Content: View>: View {
     let content: Content
     public var body: some View {
         VStack(spacing: 0) {
-            bar
+            if let pageBar = bar {
+                pageBar
+            }
             
             content
             
             Spacer()
-        }.chain { view in
+        }
+        .chain { view in
 #if os(macOS)
             view
 #else
@@ -28,6 +31,15 @@ public struct PageLayout<Content: View>: View {
     public func pagBar(_ builder: () -> PageBar?) -> Self {
         var clone = self
         clone.bar = builder()
+        return clone
+    }
+    
+    public func pagBar(title: String,
+                       backgroundColor: Color = .white,
+                       showBack: Bool = true) -> Self {
+        var clone = self
+        clone.bar = PageBar(title,
+                            backgroundColor: backgroundColor,showBack: showBack)
         return clone
     }
 }

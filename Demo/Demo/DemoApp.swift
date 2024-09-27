@@ -14,19 +14,20 @@ enum SceneEnum: String {
 
 @main
 struct DemoApp: App {
+
     @Environment(\.scenePhase) var scenePhase
     init() {
         app.bootstrap(.eager)
     }
-    @Environment(\.application)
-    var app
+    var app: Application = .shared
     @SceneBuilder
     public var body: some Scene {
         WindowGroup() {
             SceneContent(.main)
                 .environmentObject(app)
                 .environment(\.router, app[RouteService.self, SceneEnum.main.rawValue])
-        }.onChange(of: scenePhase) { newValue in
+        }
+        .onChange(of: scenePhase) { newValue in
             switch newValue {
             case .active:
                 app.bootstrap(.window)
@@ -37,8 +38,7 @@ struct DemoApp: App {
             @unknown default:
                 break
             }
-        }
-        
+        }        
         #if os(macOS)
         Settings {
             SceneContent(.setting)
