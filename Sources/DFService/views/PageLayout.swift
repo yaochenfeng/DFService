@@ -4,7 +4,7 @@ public struct PageLayout<Content: View>: View {
     var bar: PageBar? = nil
     let content: Content
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             if let pageBar = bar {
                 pageBar
             }
