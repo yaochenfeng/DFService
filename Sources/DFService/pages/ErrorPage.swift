@@ -6,7 +6,7 @@ struct ErrorPage: View {
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             
-            Image("pageError", bundle: .module)
+            Image(asset: Asset.pageError)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .edgesIgnoringSafeArea(.all)
