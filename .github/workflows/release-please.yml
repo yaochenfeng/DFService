@@ -1,3 +1,6 @@
+# https://github.com/googleapis/release-please-action 
+# https://docs.github.com/en/actions/writing-workflows/quickstart
+
 on:
   push:
     branches:
@@ -18,3 +21,9 @@ jobs:
           release-type: simple
           bump-minor-pre-major: true
           bump-patch-for-minor-pre-major: true
+
+## release xcframework
+# xcodebuild -create-xcframework -archive archives/DFService-iOS.xcarchive -framework DFService.framework 
+#   -archive archives/DFService-iOS_Simulator.xcarchive -framework DFService.framework 
+#   -archive archives/DFService-macOS.xcarchive -framework DFService.framework 
+#   -archive archives/DFService-Mac_Catalyst.xcarchive -framework DFService.framework -output xcframeworks/DFService.xcframework

@@ -5,9 +5,9 @@ name: Swift
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ $default-branch ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ $default-branch ]
 
 jobs:
   build:
@@ -32,6 +32,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Run tests on ${{ matrix.platform }}
-        run: ${{ matrix.test_cmd }} -destination ${{ matrix.destination }}
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v
