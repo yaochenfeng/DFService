@@ -14,11 +14,24 @@ jobs:
     name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
     strategy:
       matrix:
+        platform: [macOS, iOS, tvOS, watchOS]
+        include:
+          - platform: macOS
+            destination: 'generic/platform=macOS'
+            test_cmd: 'swift test'
+          - platform: iOS
+            destination: 'platform=iOS Simulator,name=iPhone 14'
+            test_cmd: 'xcodebuild -scheme DFService test'
+          - platform: tvOS
+            destination: 'platform=tvOS Simulator,name=Apple TV 4K'
+            test_cmd: 'xcodebuild -scheme DFService test'
+          - platform: watchOS
+            destination: 'platform=watchOS Simulator,name=Apple Watch Series 7'
+            test_cmd: 'xcodebuild -scheme DFService test'
         os: [macos-12,macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build
-        run: swift build
-      - name: Run tests
-        run: swift test
+
+      - name: Run tests on ${{ matrix.platform }}
+        run: ${{ matrix.test_cmd }} -destination ${{ matrix.destination }}
