@@ -90,3 +90,5 @@ extension EnvironmentValues {
         }
     }
 }
+
+public let DF = Application.shared

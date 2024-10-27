@@ -29,11 +29,6 @@ extension Router {
     }
     
     internal func handlePage(_ request: RouteRequest) {
-        if(request.routePath == .root) {
-            popToRoot()
-            self.rootPath = request
-            return
-        }
         switch request.routeType {
         case .push:
             pagePath.append(request)

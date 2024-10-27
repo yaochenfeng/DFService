@@ -120,10 +120,14 @@ public extension PageBar {
 
 struct PageBar_Previews: PreviewProvider {
     static var previews: some View {
-        PageBar("adsfas地方的")
-            .pageBarLeading {
-                Text("返回")
-                Text("走吧")
-            }
+        PageLayout {
+            
+        }.pagBar {
+            PageBar("adsfas地方的")
+                .pageBarLeading {
+//                    Text("返回")
+                    Text("走吧")
+                }
+        }
     }
 }

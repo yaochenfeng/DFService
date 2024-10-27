@@ -14,6 +14,10 @@ public extension Router {
             request.routeAction = handler(request)
             request.isHandle = true
         }
+        if request.routeAction == .page(.root) {
+            popToRoot()
+            return
+        }
         switch request.routeAction {
         case .empty: break
         case .page:

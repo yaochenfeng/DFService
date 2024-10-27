@@ -13,38 +13,29 @@ enum SceneEnum: String {
 }
 
 @main
-struct DemoApp: App {
+struct DemoApp {
+    public static func main() {
+        SwiftApp.main()
+    }
 
-    @Environment(\.scenePhase) var scenePhase
-    init() {
-        app.bootstrap(.eager)
-    }
-    var app: Application = .shared
-    @SceneBuilder
-    public var body: some Scene {
-        WindowGroup() {
-            SceneContent(.main)
-                .environmentObject(app)
-                .environment(\.router, app[RouteService.self, SceneEnum.main.rawValue])
-        }
-        .onChange(of: scenePhase) { newValue in
-            switch newValue {
-            case .active:
-                app.bootstrap(.window)
-            case .background:
-                break
-            case .inactive:
-                break
-            @unknown default:
-                break
-            }
-        }        
-        #if os(macOS)
-        Settings {
-            SceneContent(.setting)
-        }
-        #endif
-    }
+//    init() {
+//        app.bootstrap(.eager)
+//    }
+//    var app: Application = .shared
+//    @SceneBuilder
+//    public var body: some Scene {
+//        WindowGroup() {
+//            SceneContent(.main)
+//                .environmentObject(app)
+//                .environment(\.router, app[RouteService.self, SceneEnum.main.rawValue])
+//        }
+
+//        #if os(macOS)
+//        Settings {
+//            SceneContent(.setting)
+//        }
+//        #endif
+//    }
 }
 
 struct SceneContent: View {

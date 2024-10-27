@@ -1,5 +1,10 @@
 import Foundation
 
+public struct RouteSetting {
+    let name: String?
+    let arguments: Any
+}
+
 public class Router: ObservableObject {
     public enum RouteAction: Equatable, Hashable {
         case empty
