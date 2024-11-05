@@ -1,6 +1,5 @@
 
 import SwiftUI
-
 #if canImport(WebKit)
 open class WebController: ObservableObject {
     public init() {}
@@ -59,8 +58,7 @@ public extension WebView {
         let controller: WebController
         let webView: WKWebView
         
-        @Injected(LogService.self)
-        var logger
+        var logger = LogKey.get()
         required init(_ controller: WebController) {
             self.controller = controller
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: 0.1, height: 0.1), configuration: controller.config)

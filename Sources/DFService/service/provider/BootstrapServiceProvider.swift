@@ -25,13 +25,15 @@ actor Bootstrap {
         }.sorted()
         self.isRunning = true
         current = when
+        let logger = LogKey.get()
         for provider in bootProviders {
             let start_time = CFAbsoluteTimeGetCurrent()
             var success = false
             defer {
                 let end_time = CFAbsoluteTimeGetCurrent()
                 let cost_time = (end_time - start_time) * 1000
-                app[LogService.self].debug("\(provider.name) 停止服务\(success)用时: \(cost_time)毫秒")
+                
+                logger.debug("\(provider.name) 停止服务\(success)用时: \(cost_time)毫秒")
             }
             await provider.performAsyncShutdown()
             provider.isBooted = false
@@ -60,20 +62,21 @@ actor Bootstrap {
             return
         }
         self.isRunning = true
+        let logger = LogKey.get()
         for provider in currentProviders where !provider.isBooted {
             let start_time = CFAbsoluteTimeGetCurrent()
             var success = false
             defer {
                 let end_time = CFAbsoluteTimeGetCurrent()
                 let cost_time = (end_time - start_time) * 1000
-                app[LogService.self].debug("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
+                logger.debug("\(provider.name) 启动\(success)用时: \(cost_time)毫秒")
             }
             do {
                 try await provider.performAsyncStartup()
                 provider.isBooted = true
                 success = true
             } catch {
-                app[LogService.self].warning("\(provider.name) 启动失败\(error)")
+                logger.error("\(provider.name) 启动失败\(error)")
                 self.isRunning = false
                 return
             }

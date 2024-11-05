@@ -146,6 +146,5 @@ final class DFSerTests: XCTestCase {
         } catch {
             print("Error decoding or encoding JSON: \(error)")
         }
-        Application.shared[.logger] = LogService.self
     }
 }

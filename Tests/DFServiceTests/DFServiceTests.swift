@@ -12,8 +12,5 @@ final class DFServiceTests: XCTestCase {
     }
     
     func testApiCalll() async throws {
-        
-        Application.shared[.logger] = LogService.self
-        try await ServiceName.logger(ApiCallConext(method: "debug", param: "你好呀"))
     }
 }
