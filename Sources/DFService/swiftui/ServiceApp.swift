@@ -9,7 +9,6 @@ public struct ServiceApp: App {
     public var body: some Scene {
         WindowGroup {
             WindowRouteContent()
-                .padding()
         }
     }
 }
