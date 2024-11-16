@@ -60,7 +60,7 @@ extension AnyCodable: Encodable {
         case let dictionaryValue as [String: Any]:
             let encodableDictionary = dictionaryValue.mapValues { AnyCodable($0) }
             try container.encode(encodableDictionary)
-        case let custom as Codable:
+        case let custom as Encodable:
             try container.encode(custom)
         default:
             throw EncodingError.invalidValue(self.value, EncodingError.Context(codingPath: container.codingPath, debugDescription: "Unsupported type"))

@@ -19,7 +19,7 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           release-type: simple
-          bump-minor-pre-major: true
+          bump-patch: true
           bump-patch-for-minor-pre-major: true
 
 ## release xcframework
