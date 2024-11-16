@@ -1,9 +1,13 @@
 extension Router {
     @discardableResult
-    public func addPage(_ path: RoutePath,
+    public func addPage<T: View>(_ path: RoutePath,
                  @ViewBuilder
-                 builder:  @escaping (RouteRequest) -> some View) -> Router {
-        pageBuilderMap[path] = builder
+                 builder:  @escaping (RouteRequest) -> T) -> Router {
+        pageBuilderMap[path] = { req in
+            return PageRoute(builder: {
+                builder(req)
+            }, path: req.routePath , routeType: .push)
+        }
         if path == .root {
             Thread.app.mainTask {
                 self.rootPath = self.rootPath.copy
@@ -12,23 +16,25 @@ extension Router {
         return self
     }
     
-    public func page(_ request: RouteRequest) -> AnyView {
+    public func page(_ request: RouteRequest) -> PageRoute {
         if(!request.isHandle) {
             request.routeAction = handler(request)
             request.isHandle = true
         }
         let pid = request.routePath
         guard let builder = pageBuilderMap[pid] else {
-            return AnyView(
-                page404(request)
-            )
+            return onGenerateRoute(pid)
         }
-        return AnyView(
-            builder(request)
-        )
+        return PageRoute(builder: {
+            return builder(request)
+        }, path: pid,
+                         routeType: request.routeType)
     }
     
     internal func handlePage(_ request: RouteRequest) {
+        var route = self.page(request)
+        route.routeType = request.routeType
+        pages.append(route)
         switch request.routeType {
         case .push:
             pagePath.append(request)

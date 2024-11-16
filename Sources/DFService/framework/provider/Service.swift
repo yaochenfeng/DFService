@@ -1,15 +1,15 @@
 public struct Service<Base> {
     public let base: Base
-    private let provider: ServiceFactory
-    public init(_ base: Base, provider: ServiceFactory) {
+    private let handler: ServiceHandler
+    public init(_ base: Base, handler: ServiceHandler) {
         self.base = base
-        self.provider = provider
+        self.handler = handler
     }
 }
 
 extension Service where Base: ServiceKey {
     @discardableResult
     public func callAsFunction(method: String, args: Any...) -> ServiceResult<Any, Error> {
-        return provider(name: Base.name, method: method, args: args)
+        return handler(method: method, args: args)
     }
 }

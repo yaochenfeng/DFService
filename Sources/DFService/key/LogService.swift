@@ -1,15 +1,15 @@
 import Foundation
 
-public protocol LoggerService {
+public protocol LoggerHandler {
     func log(
-        level: LogKey.Level,
+        level: LogService.Level,
         message: String,
         file: String,
         function: String,
         line: UInt
     )
 }
-public extension LoggerService {
+public extension LoggerHandler {
     func debug(
         _ message: @autoclosure () -> String,
         file: String = #fileID,
@@ -37,7 +37,8 @@ public extension LoggerService {
     }
 }
 
-public struct LogKey: ServiceKey {
+public struct LogService: ServiceKey {
+    public static let shared = Self.init()
     public static let name: String = "console.log"
     var tag: String
     public init() {
@@ -56,11 +57,11 @@ public struct LogKey: ServiceKey {
     }
 }
 
-extension Service: LoggerService where Base == LogKey {
+extension Service: LoggerHandler where Base == LogService {
     
     
     public func log(
-        level: LogKey.Level,
+        level: LogService.Level,
         message: String,
         file: String = #fileID,
         function: String = #function,

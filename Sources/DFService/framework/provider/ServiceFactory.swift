@@ -1,5 +1,5 @@
 /// 服务提供者
-public final class ServiceFactory {
+final class ServiceFactory {
     public static var shared = ServiceFactory()
     var storage: [String: ServiceHandler] = [:]
     var interceptor: ServiceInterceptor

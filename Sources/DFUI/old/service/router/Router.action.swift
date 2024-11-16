@@ -32,6 +32,7 @@ public extension Router {
         
     }
     func pop() {
+        _ = self.pages.popLast()
         if  let path = presentingSheet {
             presentingSheet = nil
             if let handler = customHandlerPop {

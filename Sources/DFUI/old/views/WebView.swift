@@ -58,7 +58,7 @@ public extension WebView {
         let controller: WebController
         let webView: WKWebView
         
-        var logger = LogKey.get()
+        var logger = LogService.get()
         required init(_ controller: WebController) {
             self.controller = controller
             self.webView = WKWebView(frame: CGRect(x: 0.0, y: 0.0, width: 0.1, height: 0.1), configuration: controller.config)

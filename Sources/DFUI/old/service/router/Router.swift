@@ -21,7 +21,7 @@ public class Router: ObservableObject {
         }
     }
     
-    typealias PageBuilder = (RouteRequest) -> any View
+    typealias PageBuilder = (RouteRequest) -> PageRoute
     public typealias ActionBuilder = (RouteRequest) -> Void
     public static let shared = Router()
     /// 自定义go实现
@@ -31,13 +31,22 @@ public class Router: ObservableObject {
     public var handler:(RouteRequest) -> RouteAction = { _ in
         return .empty
     }
+    public var onGenerateRoute: (RoutePath) -> PageRoute = { setting in
+        return PageRoute(
+            builder: {
+                DemoPage()
+            },
+            path: setting,
+            routeType: .push)
+    }
     
     public var page404: (RouteRequest) -> any View = { _ in
         return EmptyView()
     }
     @Published
     public var rootPath = RoutePath.root.request
-    
+    @Published
+    public var pages = [PageRoute]()
     @Published
     public var pagePath = [RouteRequest]()
     @Published
@@ -57,6 +66,7 @@ public class Router: ObservableObject {
     }
     
     weak var controller: RouterNavigationController?
+
 }
 
 public extension Router {

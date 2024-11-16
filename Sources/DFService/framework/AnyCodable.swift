@@ -54,6 +54,13 @@ public struct AnyCodable: Codable {
                 throw EncodingError.invalidValue(self.value, EncodingError.Context(codingPath: container.codingPath, debugDescription: "Unsupported type"))
             }
         }
+    
+    public func `as`<T>() throws -> T {
+        if let value = value as? T {
+            return value
+        }
+        throw ServiceError.castFailed(expectedType: T.self, actualValue: value)
+    }
 }
 
 
