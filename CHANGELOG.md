@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/foxdock/DFService/compare/v0.4.1...v0.5.0) (2024-11-16)
+
+
+### Features
+
+* service 处理 ([bab786c](https://github.com/foxdock/DFService/commit/bab786cfb760d5d56f1cc2c11e6880e60563464f))
+
 ## [0.4.0](https://github.com/foxdock/DFService/compare/v0.3.0...v0.4.0) (2024-11-16)
 
 
