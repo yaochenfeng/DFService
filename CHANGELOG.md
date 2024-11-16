@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/foxdock/DFService/compare/v0.3.0...v0.4.0) (2024-11-16)
+
+
+### Features
+
+* 服务重构 ([ec2d236](https://github.com/foxdock/DFService/commit/ec2d236ec0127ea4facd693f1edf6acd52f8deb8))
+
 ## [0.3.0](https://github.com/foxdock/DFService/compare/v0.2.0...v0.3.0) (2024-11-05)
 
 
