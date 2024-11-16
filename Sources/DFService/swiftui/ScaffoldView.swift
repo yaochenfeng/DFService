@@ -34,7 +34,7 @@ public struct ScaffoldView<Content: View>: View {
             // Main content
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.white)
+                .background(Color(.systemBackground))
 
             // Bottom bar
             bottomBar

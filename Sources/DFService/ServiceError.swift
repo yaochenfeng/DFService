@@ -8,7 +8,7 @@ public enum ServiceError: Error {
     case castFailed(expectedType: Any.Type, actualValue: Any)
     
     /// 未实现的功能
-    case notImplemented(methodName: String)
+    case notImplemented(method: String = #function)
     
     /// 业务逻辑错误
     case businessError(code: Int, message: String)
