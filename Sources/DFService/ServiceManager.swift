@@ -19,6 +19,8 @@ extension ServiceContainer {
         let name = Key.name
         if let handler = self[name] {
             return Service(key, handler: handler)
+        } else if let handler = key as? ServiceHandler {
+            return Service(key, handler: handler)
         }
         return nil
     }

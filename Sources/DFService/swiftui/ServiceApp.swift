@@ -8,7 +8,7 @@ public struct ServiceApp: App {
     }
     public var body: some Scene {
         WindowGroup {
-            Text("暂无实现")
+            WindowRouteContent()
                 .padding()
         }
     }
