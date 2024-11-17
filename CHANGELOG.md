@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/foxdock/DFService/compare/v0.6.0...v0.6.1) (2024-11-17)
+
+
+### Bug Fixes
+
+* 条件编译 ([6832db9](https://github.com/foxdock/DFService/commit/6832db91f5d7a4905e4e52907d9f82e1981772c9))
+
 ## [0.6.0](https://github.com/foxdock/DFService/compare/v0.5.1...v0.6.0) (2024-11-17)
 
 
