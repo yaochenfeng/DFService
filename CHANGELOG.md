@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0](https://github.com/foxdock/DFService/compare/v0.5.1...v0.6.0) (2024-11-17)
+
+
+### Features
+
+* 路由处理 ([ba38a99](https://github.com/foxdock/DFService/commit/ba38a990ad1bf01a13b50149187c338ee7cc5777))
+
+
+### Bug Fixes
+
+* ios 导航栏 ([634fa07](https://github.com/foxdock/DFService/commit/634fa0744682109795e7b7101dd0cf49bde0d52a))
+* 条件编译 ([0dcddb2](https://github.com/foxdock/DFService/commit/0dcddb28cc9a192cbe68c27d16c01d007093e79e))
+* 条件编译 ([eeb71e9](https://github.com/foxdock/DFService/commit/eeb71e965bfc4e6443896109036f5555ba68611e))
+* 背景色 ([a439d40](https://github.com/foxdock/DFService/commit/a439d40c7164f889c3ba0f5cef9436ebc8c129d4))
+* 路由跳转 ([3f9f73e](https://github.com/foxdock/DFService/commit/3f9f73efc6fd2ac3ae779a1d78c7d35759766c83))
+
 ## [0.5.1](https://github.com/foxdock/DFService/compare/v0.5.0...v0.5.1) (2024-11-16)
 
 
