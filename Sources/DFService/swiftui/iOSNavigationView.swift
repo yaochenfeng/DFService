@@ -10,7 +10,7 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 import Combine
-@available(iOS 13.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+@available(iOS 13.0, macOS 13.0, tvOS 13.0, watchOS 9.0, *)
 struct iOSNavigationView: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator {
         return Coordinator()
@@ -72,6 +72,7 @@ struct iOSNavigationView: View {
 #endif
 
 #if canImport(UIKit)
+@available(tvOS 13.0, *)
 @available(iOS 13.0, *)
 class iOSNavigationController: UINavigationController {
     @MainActor
