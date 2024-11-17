@@ -4,38 +4,37 @@ public struct ScaffoldView<Content: View>: View {
     let content: Content
     let topBar: AnyView
     let bottomBar: AnyView
-
-    public init<TopBar: View, BottomBar: View>(
+    let backgroundColor: Color
+    
+    public init(
         @ViewBuilder
         content: () -> Content,
         @ViewBuilder
-        topBar: () -> TopBar,
+        topBar: () -> any View = {
+            EmptyView()
+        },
         @ViewBuilder
-        bottomBar: () -> BottomBar
+        bottomBar: () -> any View = {
+            EmptyView()
+        },
+        backgroundColor: Color = .white
     ) {
         self.content = content()
         self.topBar = AnyView(topBar())
         self.bottomBar = AnyView(bottomBar())
+        self.backgroundColor = backgroundColor
     }
-    public init(
-        @ViewBuilder
-        content: () -> Content
-    ) {
-        self.content = content()
-        self.topBar = AnyView(EmptyView())
-        self.bottomBar = AnyView(EmptyView())
-    }
-
+    
     public var body: some View {
         VStack(spacing: 0) {
             // Top bar
             topBar
-
+            
             // Main content
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.white)
-
+                .background(backgroundColor)
+            
             // Bottom bar
             bottomBar
         }

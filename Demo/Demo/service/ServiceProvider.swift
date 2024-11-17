@@ -53,7 +53,8 @@ struct DemoPage: View {
         self.name = name
     }
     
-    @EnvironmentObject var router: RouteService
+    @Environment(\.router)
+    var router: RouteService
     let name: String
     
     var body: some View {
@@ -82,6 +83,6 @@ struct DemoPage: View {
                     
                 }
             }
-        }
+        }.navigationTitle(Text(name))
     }
 }

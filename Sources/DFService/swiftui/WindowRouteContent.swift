@@ -19,7 +19,11 @@ public struct WindowRouteContent: View {
                         page
                     }
             }
-            .environmentObject(router)
+            .environment(\.router, router)
+        } else if isUIKit {
+            iOSNavigationView()
+                .ignoresSafeArea()
+                .environment(\.router, router)
         } else {
             NavigationView {
                 router.page(router.initRoute)
@@ -30,9 +34,17 @@ public struct WindowRouteContent: View {
                     }
                 }
                 
-            }.environmentObject(router)
+            }.environment(\.router, router)
         }
         
+    }
+    
+    var isUIKit: Bool {
+        #if canImport(UIKit)
+            return true
+        #else
+            return false
+        #endif
     }
 }
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)

@@ -88,3 +88,17 @@ public struct RouteSetting {
         self.argument = argument
     }
 }
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+extension EnvironmentValues {
+    struct RouteKey: EnvironmentKey {
+        static var defaultValue = RouteService.shared
+    }
+    public var router: RouteService {
+        get {
+            return self[RouteKey.self]
+        }
+        set {
+            self[RouteKey.self] = newValue
+        }
+    }
+}
