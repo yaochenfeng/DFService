@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
+@available(iOS 13.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 public struct WindowRouteContent: View {
     @StateObject
     var router = RouteService.shared
@@ -20,10 +20,16 @@ public struct WindowRouteContent: View {
                     }
             }
             .environment(\.router, router)
-        } else if isUIKit {
-            iOSNavigationView()
-                .ignoresSafeArea()
-                .environment(\.router, router)
+        } else if Constant.isUIKit {
+            if #available(iOS 14.0, *) {
+                iOSNavigationView()
+                    .ignoresSafeArea()
+                    .environment(\.router, router)
+            } else {
+                iOSNavigationView()
+                    .environment(\.router, router)
+            }
+            
         } else {
             NavigationView {
                 router.page(router.initRoute)
@@ -37,14 +43,6 @@ public struct WindowRouteContent: View {
             }.environment(\.router, router)
         }
         
-    }
-    
-    var isUIKit: Bool {
-        #if canImport(UIKit)
-            return true
-        #else
-            return false
-        #endif
     }
 }
 @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)

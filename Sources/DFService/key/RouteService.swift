@@ -8,9 +8,7 @@ public final class RouteService: ServiceKey, ServiceHandler, ObservableObject {
     public static var service: Service<RouteService> {
         return Service(shared, handler: shared)
     }
-    required public init() {
-        
-    }
+    required public init() {}
     public func callAsFunction(method: String, args: Any...) -> ServiceResult<Any, Error> {
         return .none
     }
@@ -32,7 +30,7 @@ public final class RouteService: ServiceKey, ServiceHandler, ObservableObject {
             setting: setting)
     }
     
-    
+    internal var navigation: iOSNavigationController =  iOSNavigationController()
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -60,14 +58,23 @@ extension RouteService {
         return self
     }
     @discardableResult
-    public func push(_ setting: RouteSetting) -> Self {
+    @MainActor
+    public func push(_ setting: RouteSetting, animated: Bool = true) -> Self {
+        if navigation.push(setting, animated: animated) {
+            return self
+        }
         let page = page(setting)
+    
         self.pages.append(page)
         return self
     }
     
     @discardableResult
-    public func pop(_ setting: RouteSetting? = nil) -> Self {
+    @MainActor
+    public func pop(_ setting: RouteSetting? = nil, animated: Bool = true) -> Self {
+        if navigation.pop(setting, animated: animated) {
+            return self
+        }
         if let setting = setting, let idx = pages.firstIndex(where: { item in
             return item.setting.name == setting.name
         }) {
