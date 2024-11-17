@@ -62,7 +62,12 @@ struct iOSNavigationView_Previews: PreviewProvider {
 }
 
 #else
-
+@available(iOS 13.0, macOS 10.15, tvOS 16.0, watchOS 9.0, *)
+struct iOSNavigationView: View {
+    var body: some View {
+        EmptyView()
+    }
+}
 
 #endif
 
