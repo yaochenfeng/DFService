@@ -10,7 +10,7 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 import Combine
-@available(iOS 13.0, macOS 13.0, tvOS 13.0, watchOS 9.0, *)
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 struct iOSNavigationView: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator {
         return Coordinator()
@@ -54,7 +54,7 @@ struct iOSNavigationView: UIViewControllerRepresentable {
     }
     
 }
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 struct iOSNavigationView_Previews: PreviewProvider {
     static var previews: some View {
         iOSNavigationView()
@@ -62,7 +62,7 @@ struct iOSNavigationView_Previews: PreviewProvider {
 }
 
 #else
-@available(iOS 13.0, macOS 10.15, tvOS 16.0, watchOS 9.0, *)
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 struct iOSNavigationView: View {
     var body: some View {
         EmptyView()
@@ -72,8 +72,10 @@ struct iOSNavigationView: View {
 #endif
 
 #if canImport(UIKit)
-@available(tvOS 13.0, *)
-@available(iOS 13.0, *)
+
+@available(tvOS 14.0, *)
+@available(macCatalyst 14.0, *)
+@available(iOS 14.0, *)
 class iOSNavigationController: UINavigationController {
     @MainActor
     public var environment = EnvironmentValues()
@@ -131,6 +133,7 @@ class iOSNavigationController: UINavigationController {
     }
 }
 #else
+@available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
 class iOSNavigationController {
     func push(_ setting: RouteSetting, animated: Bool) -> Bool {
         return false
