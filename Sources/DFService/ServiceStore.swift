@@ -1,7 +1,14 @@
 import Foundation
 
 public final class ServiceStore<State: ServiceStateType> {
-    public private(set) var state: State
+
+    public private(set) var state: State {
+        didSet {
+            stateChange()
+        }
+    }
+    /// 状态变更监听：iOS 12 用这个
+    public var onStateChange: ((State) -> Void)?
 
     private let reducer: State.Reducer
     private let effect: (State.Action, EffectContext) -> Void
@@ -22,7 +29,6 @@ public final class ServiceStore<State: ServiceStateType> {
 extension ServiceStore {
     /// 分发 Action，使用 reducer 更新状态
     public func dispatch(_ action: State.Action) {
-
         lock.lock()
         let oldState = state
         let result = reducer(state, action)
@@ -60,4 +66,22 @@ extension ServiceStore {
         }
     }
 
+}
+
+#if canImport(Combine)
+    import Combine
+    @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+    extension ServiceStore: ObservableObject {
+    }
+#endif
+
+extension ServiceStore {
+    private func stateChange() {
+        #if canImport(Combine)
+            if #available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *) {
+                self.objectWillChange.send()
+            }
+        #endif
+        self.onStateChange?(self.state)
+    }
 }

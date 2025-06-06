@@ -26,6 +26,7 @@ final class ServiceStateTypeTests: XCTestCase {
         // 等待异步加载完成
         assert(self.store.state.isLoading == true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            assert(self.store.state.name == "AsyncName")
             assert(self.store.state.isLoading == false)
             expectation.fulfill()
         }
