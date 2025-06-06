@@ -5,7 +5,6 @@
 //  Created by yaochenfeng on 2025/6/7.
 //
 
-import DFBase
 import DFService
 import SwiftUI
 
@@ -17,7 +16,7 @@ struct ExampleApp: App {
         
         WindowGroup {
             PagePrviewView {
-                ContentView()
+                EmptyView()
             }
         }
     }

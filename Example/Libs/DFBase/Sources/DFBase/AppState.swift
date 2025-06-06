@@ -39,9 +39,17 @@ extension EnvironmentValues {
 
 }
 
-private struct AppStoreKey: @preconcurrency EnvironmentKey {
+private struct AppStoreKey {
     @MainActor
     static var defaultValue: ServiceStore<AppState> {
         return ServiceStore(state: .shared)
     }
 }
+
+#if swift(>=5.8)
+extension AppStoreKey: @preconcurrency EnvironmentKey {
+}
+#else
+extension AppStoreKey: EnvironmentKey {
+}
+#endif
