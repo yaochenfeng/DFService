@@ -7,13 +7,57 @@
 
 import SwiftUI
 
-struct ContentView: View {
+
+struct SplashPageView: View {
+    @Environment(\.appStore) var store
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            Text("Splash Page")
+
+            Button("Go to Login Page") {
+                store.dispatch(.setRoot(AnyView(LoginPageView())))
+            }
+        }
+        .padding()
+    }
+}
+
+struct LoginPageView: View {
+    @Environment(\.appStore) var store
+
+    var body: some View {
+        VStack {
+            Image(systemName: "lock")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Login Page")
+
+            Button("Main") {
+                // Perform login action
+                store.dispatch(.setRoot(AnyView(MainPageView())))
+            }
+        }
+        .padding()
+    }
+}
+
+struct MainPageView: View {
+    @Environment(\.appStore) var store
+
+    var body: some View {
+        VStack {
+            Image(systemName: "house")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Main Page")
+
+            Button("Go to Splash Page") {
+                store.dispatch(.setRoot(AnyView(SplashPageView())))
+            }
         }
         .padding()
     }
@@ -21,6 +65,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        SplashPageView()
     }
 }

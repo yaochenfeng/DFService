@@ -11,7 +11,7 @@
 		8F4D9D582DF37B1E00692972 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F4D9D572DF37B1E00692972 /* Assets.xcassets */; };
 		8F4D9D5C2DF37B1E00692972 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F4D9D5B2DF37B1E00692972 /* Preview Assets.xcassets */; };
 		8FB35B932DF37BC40051E31A /* DFBase in Frameworks */ = {isa = PBXBuildFile; productRef = 8FB35B922DF37BC40051E31A /* DFBase */; };
-		8FB35B952DF37DE70051E31A /* EntryModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB35B942DF37DE70051E31A /* EntryModule.swift */; };
+		8FB35B952DF37DE70051E31A /* AppModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB35B942DF37DE70051E31A /* AppModule.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,7 +21,7 @@
 		8F4D9D592DF37B1E00692972 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		8F4D9D5B2DF37B1E00692972 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8F4D9D632DF37B3300692972 /* DFBase */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DFBase; path = Libs/DFBase; sourceTree = "<group>"; };
-		8FB35B942DF37DE70051E31A /* EntryModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryModule.swift; sourceTree = "<group>"; };
+		8FB35B942DF37DE70051E31A /* AppModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +57,7 @@
 		8F4D9D522DF37B1C00692972 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				8FB35B942DF37DE70051E31A /* EntryModule.swift */,
+				8FB35B942DF37DE70051E31A /* AppModule.swift */,
 				8F4D9D552DF37B1C00692972 /* ContentView.swift */,
 				8F4D9D572DF37B1E00692972 /* Assets.xcassets */,
 				8F4D9D592DF37B1E00692972 /* Example.entitlements */,
@@ -163,7 +163,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FB35B952DF37DE70051E31A /* EntryModule.swift in Sources */,
+				8FB35B952DF37DE70051E31A /* AppModule.swift in Sources */,
 				8F4D9D562DF37B1C00692972 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,7 +296,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
-				DEVELOPMENT_TEAM = DVP3U56PW8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -334,7 +334,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Example/Preview Content\"";
-				DEVELOPMENT_TEAM = DVP3U56PW8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

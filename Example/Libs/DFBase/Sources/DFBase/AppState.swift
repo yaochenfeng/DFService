@@ -28,7 +28,7 @@ public struct AppState:  ServiceStateType {
         case setRoot(AnyView)
     }
 
-    @MainActor public static var shared = AppState()
+    @MainActor public static var store = ServiceStore(state: AppState())
 }
 
 extension EnvironmentValues {
@@ -42,7 +42,7 @@ extension EnvironmentValues {
 private struct AppStoreKey {
     @MainActor
     static var defaultValue: ServiceStore<AppState> {
-        return ServiceStore(state: .shared)
+        return AppState.store
     }
 }
 
