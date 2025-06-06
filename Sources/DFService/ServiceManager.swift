@@ -29,4 +29,15 @@ extension ServiceManager {
     public func getModule<T: ServiceModuleType>(byType type: T.Type) -> T? {
         return modules.values.first(where: { $0 is T }) as? T
     }
+    public func sendEvent(_ event: ServiceEvent, to moduleName: String? = nil) {
+        if let moduleName = moduleName {
+            // 只发给指定模块
+            modules[moduleName]?.handle(event: event)
+        } else {
+            // 广播给所有模块
+            for module in modules.values {
+                module.handle(event: event)
+            }
+        }
+    }
 }

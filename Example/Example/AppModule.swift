@@ -1,3 +1,4 @@
+import DFBase
 //
 //  EntryModule.swift
 //  Example
@@ -6,18 +7,21 @@
 //
 import DFService
 import SwiftUI
-import DFBase
-
 
 class AppModule: ServiceModuleType {
     required init(_ manager: DFService.ServiceManager) {
-        
+
     }
-    
+
     var taskPhases: [DFService.ServicePhase] = [.initial]
-    
+
     func run(phase: DFService.ServicePhase) {
         AppState.store(.setRoot(AnyView(SplashPageView())))
     }
-    
+
+    func handle(event: DFService.ServiceEvent) {
+        // 处理事件逻辑
+        print("Received event: \(event.name) with payload: \(event.payload)")
+    }
+
 }

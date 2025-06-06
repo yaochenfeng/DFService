@@ -6,7 +6,14 @@
 //
 
 import Foundation
-
+public struct ServiceEvent {
+    public let name: String
+    public let payload: Any
+    public init(name: String, payload: Any = ()) {
+        self.name = name
+        self.payload = payload
+    }
+}
 public struct ServicePhase: Comparable, RawRepresentable {
     // 内置阶段
     public static let initial = ServicePhase(rawValue: 0)  // 初始阶段
@@ -37,6 +44,8 @@ public protocol ServiceModuleType: AnyObject {
     var taskPhases: [ServicePhase] { get }
 
     @MainActor func run(phase: ServicePhase)
+    /// 处理事件（可选实现）
+    func handle(event: ServiceEvent)
 }
 
 extension ServiceModuleType {
@@ -47,5 +56,9 @@ extension ServiceModuleType {
     // 默认实现，子类可以覆盖
     public var taskPhases: [ServicePhase] {
         return [.splash]
+    }
+    
+    func handle(event: ServiceEvent) {
+        
     }
 }

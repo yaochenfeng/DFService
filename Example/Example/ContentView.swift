@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import DFService
 
 struct SplashPageView: View {
     @Environment(\.appStore) var store
@@ -20,6 +20,12 @@ struct SplashPageView: View {
 
             Button("Go to Login Page") {
                 store.dispatch(.setRoot(AnyView(LoginPageView())))
+            }
+
+            Button("send event") {
+                // Example of sending an event
+                let event = ServiceEvent(name: "exampleEvent", payload: "Hello, World!")
+                ServiceManager.shared.sendEvent(event)
             }
         }
         .padding()
