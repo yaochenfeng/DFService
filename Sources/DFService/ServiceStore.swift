@@ -1,5 +1,6 @@
 import Foundation
 
+
 public final class ServiceStore<State: ServiceStateType> {
 
     public private(set) var state: State {
@@ -74,7 +75,6 @@ extension ServiceStore {
     extension ServiceStore: ObservableObject {
     }
 #endif
-
 extension ServiceStore {
     private func stateChange() {
         #if canImport(Combine)

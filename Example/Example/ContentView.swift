@@ -10,7 +10,7 @@ import DFService
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var store: ServiceStore<AppState>
+    @Environment(\.appStore) var store
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -27,7 +27,7 @@ struct ContentView: View {
 }
 
 struct PageDemo: View {
-    @EnvironmentObject var store: ServiceStore<AppState>
+    @Environment(\.appStore) var store
     var body: some View {
 
         VStack {
@@ -59,5 +59,7 @@ struct PageMe: View {
 }
 
 #Preview {
-    ContentView()
+    PagePrviewView{
+        ContentView()
+    }
 }
