@@ -1,35 +1,43 @@
-import Foundation
+public final class ServiceManager {
+    public static var shared = ServiceManager()
+    public init() {}
 
-class ServiceManger {
-    var storage: [String: ServiceHandler] = [:]
+    private var modules: [String: ServiceModuleType] = [:]
+
+    @MainActor
+    public func runAll(phase: ServicePhase) {
+        modules.values
+            .filter { $0.taskPhases.contains(phase) }
+            .forEach { $0.run(phase: phase) }
+    }
 }
 
-extension ServiceContainer {
-    public subscript(name: String) -> ServiceHandler? {
-        get {
-            let key = name
-            return serviceManager.storage[key]
-        }
-        set {
-            let key = name
-            serviceManager.storage[key] = newValue
-        }
+extension ServiceManager {
+    public func register<Module: ServiceModuleType>(_ module: Module) {
+        modules[Module.name] = module
     }
-    public func get<Key: ServiceKey>(_ key: Key) -> Service<Key>? {
-        let name = Key.name
-        if let handler = self[name] {
-            return Service(key, handler: handler)
-        } else if let handler = key as? ServiceHandler {
-            return Service(key, handler: handler)
-        }
-        return nil
+    public func register<Module: ServiceModuleType>(_ module: Module.Type = Module.self) {
+        let value = module.init(self)
+        register(value)
     }
-    
-    public func getOrMock<Key: ServiceKey>(_ key: Key) -> Service<Key> {
-        if let value = self.get(key) {
-            return value
+    // 通过模块名称获取模块实例
+    public func getModule(named name: String) -> ServiceModuleType? {
+        return modules[name]
+    }
+
+    // 通过模块类型获取模块实例
+    public func getModule<T: ServiceModuleType>(byType type: T.Type) -> T? {
+        return modules.values.first(where: { $0 is T }) as? T
+    }
+    public func sendEvent(_ event: ServiceEvent, to moduleName: String? = nil) {
+        if let moduleName = moduleName {
+            // 只发给指定模块
+            modules[moduleName]?.handle(event: event)
+        } else {
+            // 广播给所有模块
+            for module in modules.values {
+                module.handle(event: event)
+            }
         }
-        let name = Key.name
-        return Service(Key.shared, handler: ServiceMockHandler(name: name))
     }
 }
