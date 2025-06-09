@@ -11,209 +11,305 @@ import XCTest
 
 final class ServicePromiseTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testPromiseResolvesImmediately() {
+        let expectation = self.expectation(description: "Immediate resolve")
+        let promise = ServicePromise<String> { resolve, _ in
+            resolve("immediate")
+        }
+        promise.then { value in
+            XCTAssertEqual(value, "immediate")
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testPromiseRejectsImmediately() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Immediate reject")
+        let promise = ServicePromise<Int> { _, reject in
+            reject(TestError.fail)
+        }
+        promise.catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testThenAfterResolve() {
+        let expectation = self.expectation(description: "Then after resolve")
+        let promise = ServicePromise<Int>.resolve(5)
+        promise.then { value in
+            XCTAssertEqual(value, 5)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testCatchAfterReject() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Catch after reject")
+        let promise = ServicePromise<Int>.reject(TestError.fail)
+        promise.catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testFinallyAfterResolve() {
+        let expectation = self.expectation(description: "Finally after resolve")
+        let promise = ServicePromise<Int>.resolve(1)
+        promise.finally {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testFinallyAfterReject() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Finally after reject")
+        let promise = ServicePromise<Int>.reject(TestError.fail)
+        promise.finally {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testAllResolves() {
+        let expectation = self.expectation(description: "All resolves")
+        let p1 = ServicePromise<Int>.resolve(1)
+        let p2 = ServicePromise<Int>.resolve(2)
+        let p3 = ServicePromise<Int>.resolve(3)
+        ServicePromise.all([p1, p2, p3]).then { values in
+            XCTAssertEqual(values.sorted(), [1, 2, 3])
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testAllRejectsIfAnyFails() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "All rejects if any fails")
+        let p1 = ServicePromise<Int>.resolve(1)
+        let p2 = ServicePromise<Int>.reject(TestError.fail)
+        let p3 = ServicePromise<Int>.resolve(3)
+        ServicePromise.all([p1, p2, p3]).catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testAllEmptyArray() {
+        let expectation = self.expectation(description: "All with empty array resolves immediately")
+        ServicePromise<Int>.all([]).then { values in
+            XCTAssertEqual(values.count, 0)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testThenThrowsError() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Then throws error")
+        let promise = ServicePromise<Int>.resolve(1)
+        promise.then { _ in
+            throw TestError.fail
+        }.catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testMultipleThenHandlers() {
+        let expectation1 = self.expectation(description: "First then called")
+        let expectation2 = self.expectation(description: "Second then called")
+        let promise = ServicePromise<String>.resolve("multi")
+        promise.then { value in
+            XCTAssertEqual(value, "multi")
+            expectation1.fulfill()
+        }
+        promise.then { value in
+            XCTAssertEqual(value, "multi")
+            expectation2.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testMultipleCatchHandlers() {
+        enum TestError: Error { case fail }
+        let expectation1 = self.expectation(description: "First catch called")
+        let expectation2 = self.expectation(description: "Second catch called")
+        let promise = ServicePromise<String>.reject(TestError.fail)
+        promise.catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation1.fulfill()
+        }
+        promise.catch { error in
+            XCTAssertTrue(error is TestError)
+            expectation2.fulfill()
+        }
+        waitForExpectations(timeout: 1)
     }
     func testPromiseResolvesSuccessfully() {
         let expectation = self.expectation(description: "Promise should resolve")
         let promise = ServicePromise<Int> { resolve, _ in
-            resolve(10)
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(42)
+            }
         }
-        var result: Int?
         promise.then { value in
-            result = value
+            XCTAssertEqual(value, 42)
             expectation.fulfill()
         }
         waitForExpectations(timeout: 1)
-        XCTAssertEqual(result, 10)
-        XCTAssertEqual(promise.state, .fulfilled)
     }
 
     func testPromiseRejectsWithError() {
+        enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Promise should reject")
         let promise = ServicePromise<Int> { _, reject in
-            reject(NSError(domain: "Test", code: 123, userInfo: nil))
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                reject(TestError.fail)
+            }
         }
-        var receivedError: Error?
         promise.catch { error in
-            receivedError = error
+            XCTAssertTrue(error is TestError)
             expectation.fulfill()
         }
         waitForExpectations(timeout: 1)
-        XCTAssertNotNil(receivedError)
-        XCTAssertEqual(promise.state, .rejected)
     }
 
-    func testPromiseFinallyCalledOnResolve() {
-        let expectation = self.expectation(description: "Finally should be called")
+    func testThenChaining() {
+        let expectation = self.expectation(description: "Promise chain should resolve")
         let promise = ServicePromise<Int> { resolve, _ in
-            resolve(5)
+            resolve(10)
         }
-        var finallyCalled = false
-        promise.finally {
-            finallyCalled = true
-            expectation.fulfill()
-        }
+        promise
+            .then { value -> Int in
+                return value * 2
+            }
+            .then { value -> String in
+                XCTAssertEqual(value, 20)
+                return "Final value: \(value)"
+            }
+            .then { value -> String in
+                XCTAssertEqual(value, "Final value: 20")
+                return "20"
+            }
+            .then { value -> ServicePromise<String> in
+                return ServicePromise<String> { resolve, _ in
+                    resolve("Chained value: \(value)")
+                }
+            }.then { value in
+                XCTAssertEqual(value, "Chained value: 20")
+                expectation.fulfill()
+            }
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(finallyCalled)
     }
 
-    func testPromiseFinallyCalledOnReject() {
-        let expectation = self.expectation(description: "Finally should be called on reject")
+    func testCatchAfterThen() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Promise should catch error after then")
         let promise = ServicePromise<Int> { _, reject in
-            reject(NSError(domain: "Test", code: 1, userInfo: nil))
+            reject(TestError.fail)
         }
-        var finallyCalled = false
+        promise
+            .then { value in
+                XCTFail("Should not be called")
+            }
+            .catch { error in
+                XCTAssertTrue(error is TestError)
+                expectation.fulfill()
+            }
+        waitForExpectations(timeout: 1)
+    }
+
+    func testFinallyCalledOnFulfill() {
+        let expectation = self.expectation(description: "Finally should be called on fulfill")
+        let promise = ServicePromise<String> { resolve, _ in
+            resolve("done")
+        }
         promise.finally {
-            finallyCalled = true
             expectation.fulfill()
         }
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(finallyCalled)
     }
 
-    func testPromiseCancel() {
-        let expectation = self.expectation(description: "Cancel handler should be called")
-        let promise = ServicePromise<Int> { _, _ in }
-        var cancelCalled = false
-        promise.onCancel {
-            cancelCalled = true
+    func testFinallyCalledOnReject() {
+        enum TestError: Error { case fail }
+        let expectation = self.expectation(description: "Finally should be called on reject")
+        let promise = ServicePromise<String> { _, reject in
+            reject(TestError.fail)
+        }
+        promise.finally {
             expectation.fulfill()
         }
-        promise.cancel()
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(cancelCalled)
-        XCTAssertEqual(promise.state, .cancelled)
     }
 
-    func testThenCalledImmediatelyIfAlreadyResolved() {
-        let promise = ServicePromise<Int> { resolve, _ in
-            resolve(99)
+    func testResolveWithValue() {
+        let promise = ServicePromise<Int>.resolve(100)
+
+        XCTAssertEqual(promise.value, 100)
+    }
+    func testRejectWithError() {
+        enum TestError: Error { case fail }
+        let promise = ServicePromise<Int>.reject(TestError.fail)
+
+        XCTAssertNil(promise.value)
+        XCTAssertTrue(!promise.isPending)
+    }
+
+    func testAllAndOrder() {
+        let expectation = self.expectation(description: "All resolves in order")
+        let p1 = ServicePromise<Int>.resolve(1)
+        let p2 = ServicePromise<Int>.resolve(2)
+        let p3 = ServicePromise<Int>.resolve(3)
+
+        ServicePromise.all([p1, p2, p3]).then { values in
+            XCTAssertEqual(values, [1, 2, 3])
+            expectation.fulfill()
         }
-        var value: Int?
-        let _ = promise.then { v in
-            value = v
+
+        waitForExpectations(timeout: 1)
+    }
+    func testAllAsyncAndOrder() {
+        let expectation = self.expectation(description: "All resolves in order with async")
+        let p1 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(1)
+            }
         }
+        let p2 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+                resolve(2)
+            }
+        }
+        let p3 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) {
+                resolve(3)
+            }
+        }
+
+        ServicePromise.all([p1, p2, p3]).then { values in
+            XCTAssertEqual(values, [1, 2, 3])
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    @available(macOS 10.15, iOS 13.0, *)
+    func testAsyncInitAndWait() async throws {
+        let promise = ServicePromise<Int> {
+            try await Task.sleep(nanoseconds: 100_000_000)
+            return 99
+        }
+        let value = try await promise.wait()
         XCTAssertEqual(value, 99)
     }
 
-    func testCatchCalledImmediatelyIfAlreadyRejected() {
-        let promise = ServicePromise<Int> { _, reject in
-            reject(NSError(domain: "Test", code: 2, userInfo: nil))
-        }
-        var error: Error?
-        let _ = promise.catch { e in
-            error = e
-        }
-        XCTAssertNotNil(error)
-    }
-
-    func testFinallyCalledImmediatelyIfAlreadyResolved() {
-        let promise = ServicePromise<Int> { resolve, _ in
-            resolve(42)
-        }
-        var finallyCalled = false
-        let _ = promise.finally {
-            finallyCalled = true
-        }
-        XCTAssertTrue(finallyCalled)
-    }
-    func testFinallyCalledImmediatelyIfAlreadyRejected() {
-        let promise = ServicePromise<Int> { _, reject in
-            reject(NSError(domain: "Test", code: 3, userInfo: nil))
-        }
-        var finallyCalled = false
-        let _ = promise.finally {
-            finallyCalled = true
-        }
-        XCTAssertTrue(finallyCalled)
-    }
-    func testOnCancelCalledImmediatelyIfAlreadyCancelled() {
-        let promise = ServicePromise<Int> { _, _ in }
-        var cancelCalled = false
-        let _ = promise.onCancel {
-            cancelCalled = true
-        }
-        promise.cancel()
-        XCTAssertTrue(cancelCalled)
-    }
-    func testOnCancelNotCalledIfPromiseNotCancelled() {
-        let promise = ServicePromise<Int> { _, _ in }
-        var cancelCalled = false
-        let _ = promise.onCancel {
-            cancelCalled = true
-        }
-        XCTAssertFalse(cancelCalled)
-    }
-    func testThenAfterResolve() {
-        let expectation = self.expectation(description: "Then should be called after resolve")
-        let promise = ServicePromise<Int> { resolve, _ in
-            resolve(20)
-        }
-        var value: Int?
-        promise.then { v in
-            value = v
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1)
-        XCTAssertEqual(value, 20)
-    }
-    func testThenAfterReject() {
-        let expectation = self.expectation(description: "Then should not be called after reject")
-        let promise = ServicePromise<Int> { _, reject in
-
-            reject(NSError(domain: "Test", code: 4, userInfo: nil))
-        }
-        var value: Int?
-        promise.then { v in
-            value = v
-            expectation.fulfill()
-        }.catch { _ in
-            // Catch block should be called, not then
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1)
-        XCTAssertNil(value)
-        XCTAssertEqual(promise.state, .rejected)
-
-    }
-
-}
-
-@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-extension ServicePromiseTests {
-    func testAsyncToPromise() async throws {
-        //        let expectation = self.expectation(description: "Async promise should resolve")
-        var result: Int?
-        let promise = ServicePromise.fromAsync { () async throws -> Int in
-            try await Task.sleep(nanoseconds: 500_000_000)  // 0.5 seconds
-            return 42
-        }
-        result = try await promise.toAsync()
-        //        await fulfillment(of: [expectation], timeout: 1)
-        XCTAssertEqual(result, 42)
-
-        print("Async promise resolved with value: \(result ?? 0)")
-
-    }
-    func testPromiseToAsync() async throws {
-        let expectation = self.expectation(description: "Async promise should resolve")
-
-        let promise = ServicePromise<Int> { resolve, _ in
-            DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
-                resolve(100)
-            }
-        }
-        var result: Int?
-        promise.then { value in
-            result = value
-            expectation.fulfill()
-        }
-        await fulfillment(of: [expectation], timeout: 1)
-        XCTAssertEqual(result, 100)
-    }
 }
