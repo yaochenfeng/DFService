@@ -1,0 +1,26 @@
+name: Test on macOS and Linux
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Tests (macOS)
+        run: swift test --enable-code-coverage
+
+  linux:
+    name: Test on Linux
+    runs-on: ubuntu-latest
+    container:
+      image: swift:5.10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run Tests (Linux)
+        run: swift test
