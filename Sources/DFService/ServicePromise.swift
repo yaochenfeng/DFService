@@ -139,6 +139,9 @@ extension ServicePromise {
 
     //拓展Promise 常用函数 转换错误等
     public static func all(_ promises: [ServicePromise<Value>]) -> ServicePromise<[Value]> {
+        guard !promises.isEmpty else {
+            return .resolve([])
+        }
         return ServicePromise<[Value]> { resolve, reject in
             var results = [Value?](repeating: nil, count: promises.count)
             var remaining = promises.count
