@@ -56,9 +56,9 @@ struct CounterState: ServiceStateType {
 ```
 
 
-### 实现ServicePromise 异步使用
+### 实现DFPromise 异步使用
 
-`ServicePromise` 提供了基于 Promise 的异步服务调用方式，适合需要链式调用或异步返回结果的场景。
+`DFPromise` 提供了基于 Promise 的异步服务调用方式，适合需要链式调用或异步返回结果的场景。
 
 #### 示例：异步获取数据
 
@@ -70,7 +70,7 @@ struct UserInfo: Codable {
 }
 
 // 定义一个 ServicePromise
-let promise = ServicePromise<UserInfo> { resolver in
+let promise = DFPromise<UserInfo> { resolver in
     // 模拟异步网络请求
     Task {
         try await Task.sleep(nanoseconds: 1_000_000_000) // 1秒延迟

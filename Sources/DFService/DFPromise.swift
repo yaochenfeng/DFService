@@ -1,14 +1,9 @@
-public final class ServicePromise<Value> {
+public final class DFPromise<Value> {
     public typealias Resolve = (Value) -> Void
     public typealias Reject = (Error) -> Void
     public enum State {
         case pending, fulfilled, rejected
     }
-
-    // private var successHandler: ((Value) -> Void)?
-    // private var failureHandler: ((Error) -> Void)?
-    // private var finalHandler: (() -> Void)?
-    // private var cancelHandler: (() -> Void)?
     /// 用于存储成功回调的数组，便于在 Promise 被解析时调用
     private var onSuccessHandlers: [(Value) -> Void] = []
     /// 用于存储失败回调的数组，便于在 Promise 被拒绝时调用
@@ -50,10 +45,10 @@ public final class ServicePromise<Value> {
     }
 }
 
-extension ServicePromise {
+extension DFPromise {
     @discardableResult
-    public func then<U>(_ onFulfilled: @escaping (Value) throws -> U) -> ServicePromise<U> {
-        return ServicePromise<U> { resolve, reject in
+    public func then<U>(_ onFulfilled: @escaping (Value) throws -> U) -> DFPromise<U> {
+        return DFPromise<U> { resolve, reject in
             let handle = { (value: Value) in
                 do {
                     let result = try onFulfilled(value)
@@ -80,9 +75,9 @@ extension ServicePromise {
     }
     @discardableResult
     public func then<U>(
-        _ onFulfilled: @escaping (Value) throws -> ServicePromise<U>
-    ) -> ServicePromise<U> {
-        return ServicePromise<U> { resolve, reject in
+        _ onFulfilled: @escaping (Value) throws -> DFPromise<U>
+    ) -> DFPromise<U> {
+        return DFPromise<U> { resolve, reject in
             let handle: (Value) -> Void = { value in
                 do {
                     let nextPromise = try onFulfilled(value)
@@ -138,11 +133,11 @@ extension ServicePromise {
     }
 
     //拓展Promise 常用函数 转换错误等
-    public static func all(_ promises: [ServicePromise<Value>]) -> ServicePromise<[Value]> {
+    public static func all(_ promises: [DFPromise<Value>]) -> DFPromise<[Value]> {
         guard !promises.isEmpty else {
             return .resolve([])
         }
-        return ServicePromise<[Value]> { resolve, reject in
+        return DFPromise<[Value]> { resolve, reject in
             var results = [Value?](repeating: nil, count: promises.count)
             var remaining = promises.count
 
@@ -160,14 +155,14 @@ extension ServicePromise {
         }
     }
 
-    public static func resolve(_ value: Value) -> ServicePromise<Value> {
-        return ServicePromise<Value> { resolve, _ in
+    public static func resolve(_ value: Value) -> DFPromise<Value> {
+        return DFPromise<Value> { resolve, _ in
             resolve(value)
         }
     }
 
-    public static func reject(_ error: Error) -> ServicePromise<Value> {
-        return ServicePromise<Value> { _, reject in
+    public static func reject(_ error: Error) -> DFPromise<Value> {
+        return DFPromise<Value> { _, reject in
             reject(error)
         }
     }
@@ -190,7 +185,7 @@ extension ServicePromise {
 }
 
 @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-extension ServicePromise {
+extension DFPromise {
     public convenience init(
         _ work: @escaping () async throws -> Value
     ) {
