@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/foxdock/DFService/compare/v0.6.1...v0.7.0) (2025-06-09)
+
+
+### Features
+
+* add ServicePromise ([#20](https://github.com/foxdock/DFService/issues/20)) ([99b19ea](https://github.com/foxdock/DFService/commit/99b19ea3982295c77f5fc23cfefff7a01ee1b52a))
+* add test ([#22](https://github.com/foxdock/DFService/issues/22)) ([4100dc2](https://github.com/foxdock/DFService/commit/4100dc268e948b0e132d47e15b6eafcdabcbcef7))
+
+
+### Bug Fixes
+
+* promise all ([#23](https://github.com/foxdock/DFService/issues/23)) ([bee1772](https://github.com/foxdock/DFService/commit/bee1772d876d01c726cca4c0e6641daf2a6d9e28))
+
 ## [0.6.1](https://github.com/foxdock/DFService/compare/v0.6.0...v0.6.1) (2024-11-17)
 
 
