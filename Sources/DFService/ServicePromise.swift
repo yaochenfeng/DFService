@@ -139,28 +139,30 @@ extension ServicePromise {
 
     //拓展Promise 常用函数 转换错误等
     public static func all(_ promises: [ServicePromise<Value>]) -> ServicePromise<[Value]> {
-        return ServicePromise<[Value]> { resolve, reject in
-            var results: [Value] = []
-            var remaining = promises.count
+    return ServicePromise<[Value]> { resolve, reject in
+        var results = Array<Value?>(repeating: nil, count: promises.count)
+        var remaining = promises.count
 
-            if remaining == 0 {
-                resolve([])
-                return
-            }
+        if promises.isEmpty {
+            resolve([])
+            return
+        }
 
-            for promise in promises {
-                promise.then { value in
-                    results.append(value)
-                    remaining -= 1
-                    if remaining == 0 {
-                        resolve(results)
-                    }
-                }.catch { error in
-                    reject(error)
+        for (index, promise) in promises.enumerated() {
+            promise.then { value in
+                results[index] = value
+                remaining -= 1
+                if remaining == 0 {
+                    // 全部 fulfilled 后，转换为 [Value]
+                    resolve(results.compactMap { $0 })
                 }
+            }.catch { error in
+                // 任何一个失败，立即 reject
+                reject(error)
             }
         }
     }
+}
 
     public static func resolve(_ value: Value) -> ServicePromise<Value> {
         return ServicePromise<Value> { resolve, _ in
