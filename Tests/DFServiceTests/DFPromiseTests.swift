@@ -1,5 +1,4 @@
 //
-//  ServicePromiseTests.swift
 //  DFService
 //
 //  Created by yaochenfeng on 2025/6/7.
@@ -9,11 +8,11 @@ import XCTest
 
 @testable import DFService
 
-final class ServicePromiseTests: XCTestCase {
-
+final class DFPromiseTests: XCTestCase {
+    
     func testPromiseResolvesImmediately() {
         let expectation = self.expectation(description: "Immediate resolve")
-        let promise = ServicePromise<String> { resolve, _ in
+        let promise = DFPromise<String> { resolve, _ in
             resolve("immediate")
         }
         promise.then { value in
@@ -26,7 +25,7 @@ final class ServicePromiseTests: XCTestCase {
     func testPromiseRejectsImmediately() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Immediate reject")
-        let promise = ServicePromise<Int> { _, reject in
+        let promise = DFPromise<Int> { _, reject in
             reject(TestError.fail)
         }
         promise.catch { error in
@@ -38,7 +37,7 @@ final class ServicePromiseTests: XCTestCase {
 
     func testThenAfterResolve() {
         let expectation = self.expectation(description: "Then after resolve")
-        let promise = ServicePromise<Int>.resolve(5)
+        let promise = DFPromise<Int>.resolve(5)
         promise.then { value in
             XCTAssertEqual(value, 5)
             expectation.fulfill()
@@ -49,7 +48,7 @@ final class ServicePromiseTests: XCTestCase {
     func testCatchAfterReject() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Catch after reject")
-        let promise = ServicePromise<Int>.reject(TestError.fail)
+        let promise = DFPromise<Int>.reject(TestError.fail)
         promise.catch { error in
             XCTAssertTrue(error is TestError)
             expectation.fulfill()
@@ -59,7 +58,7 @@ final class ServicePromiseTests: XCTestCase {
 
     func testFinallyAfterResolve() {
         let expectation = self.expectation(description: "Finally after resolve")
-        let promise = ServicePromise<Int>.resolve(1)
+        let promise = DFPromise<Int>.resolve(1)
         promise.finally {
             expectation.fulfill()
         }
@@ -69,7 +68,7 @@ final class ServicePromiseTests: XCTestCase {
     func testFinallyAfterReject() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Finally after reject")
-        let promise = ServicePromise<Int>.reject(TestError.fail)
+        let promise = DFPromise<Int>.reject(TestError.fail)
         promise.finally {
             expectation.fulfill()
         }
@@ -78,10 +77,10 @@ final class ServicePromiseTests: XCTestCase {
 
     func testAllResolves() {
         let expectation = self.expectation(description: "All resolves")
-        let p1 = ServicePromise<Int>.resolve(1)
-        let p2 = ServicePromise<Int>.resolve(2)
-        let p3 = ServicePromise<Int>.resolve(3)
-        ServicePromise.all([p1, p2, p3]).then { values in
+        let p1 = DFPromise<Int>.resolve(1)
+        let p2 = DFPromise<Int>.resolve(2)
+        let p3 = DFPromise<Int>.resolve(3)
+        DFPromise.all([p1, p2, p3]).then { values in
             XCTAssertEqual(values.sorted(), [1, 2, 3])
             expectation.fulfill()
         }
@@ -91,10 +90,10 @@ final class ServicePromiseTests: XCTestCase {
     func testAllRejectsIfAnyFails() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "All rejects if any fails")
-        let p1 = ServicePromise<Int>.resolve(1)
-        let p2 = ServicePromise<Int>.reject(TestError.fail)
-        let p3 = ServicePromise<Int>.resolve(3)
-        ServicePromise.all([p1, p2, p3]).catch { error in
+        let p1 = DFPromise<Int>.resolve(1)
+        let p2 = DFPromise<Int>.reject(TestError.fail)
+        let p3 = DFPromise<Int>.resolve(3)
+        DFPromise.all([p1, p2, p3]).catch { error in
             XCTAssertTrue(error is TestError)
             expectation.fulfill()
         }
@@ -103,7 +102,7 @@ final class ServicePromiseTests: XCTestCase {
 
     func testAllEmptyArray() {
         let expectation = self.expectation(description: "All with empty array resolves immediately")
-        ServicePromise<Int>.all([]).then { values in
+        DFPromise<Int>.all([]).then { values in
             XCTAssertEqual(values.count, 0)
             expectation.fulfill()
         }
@@ -113,7 +112,7 @@ final class ServicePromiseTests: XCTestCase {
     func testThenThrowsError() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Then throws error")
-        let promise = ServicePromise<Int>.resolve(1)
+        let promise = DFPromise<Int>.resolve(1)
         promise.then { _ in
             throw TestError.fail
         }.catch { error in
@@ -126,7 +125,7 @@ final class ServicePromiseTests: XCTestCase {
     func testMultipleThenHandlers() {
         let expectation1 = self.expectation(description: "First then called")
         let expectation2 = self.expectation(description: "Second then called")
-        let promise = ServicePromise<String>.resolve("multi")
+        let promise = DFPromise<String>.resolve("multi")
         promise.then { value in
             XCTAssertEqual(value, "multi")
             expectation1.fulfill()
@@ -142,7 +141,7 @@ final class ServicePromiseTests: XCTestCase {
         enum TestError: Error { case fail }
         let expectation1 = self.expectation(description: "First catch called")
         let expectation2 = self.expectation(description: "Second catch called")
-        let promise = ServicePromise<String>.reject(TestError.fail)
+        let promise = DFPromise<String>.reject(TestError.fail)
         promise.catch { error in
             XCTAssertTrue(error is TestError)
             expectation1.fulfill()
@@ -155,7 +154,7 @@ final class ServicePromiseTests: XCTestCase {
     }
     func testPromiseResolvesSuccessfully() {
         let expectation = self.expectation(description: "Promise should resolve")
-        let promise = ServicePromise<Int> { resolve, _ in
+        let promise = DFPromise<Int> { resolve, _ in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
                 resolve(42)
             }
@@ -170,7 +169,7 @@ final class ServicePromiseTests: XCTestCase {
     func testPromiseRejectsWithError() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Promise should reject")
-        let promise = ServicePromise<Int> { _, reject in
+        let promise = DFPromise<Int> { _, reject in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
                 reject(TestError.fail)
             }
@@ -184,7 +183,7 @@ final class ServicePromiseTests: XCTestCase {
 
     func testThenChaining() {
         let expectation = self.expectation(description: "Promise chain should resolve")
-        let promise = ServicePromise<Int> { resolve, _ in
+        let promise = DFPromise<Int> { resolve, _ in
             resolve(10)
         }
         promise
@@ -199,8 +198,8 @@ final class ServicePromiseTests: XCTestCase {
                 XCTAssertEqual(value, "Final value: 20")
                 return "20"
             }
-            .then { value -> ServicePromise<String> in
-                return ServicePromise<String> { resolve, _ in
+            .then { value -> DFPromise<String> in
+                return DFPromise<String> { resolve, _ in
                     resolve("Chained value: \(value)")
                 }
             }.then { value in
@@ -213,7 +212,7 @@ final class ServicePromiseTests: XCTestCase {
     func testCatchAfterThen() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Promise should catch error after then")
-        let promise = ServicePromise<Int> { _, reject in
+        let promise = DFPromise<Int> { _, reject in
             reject(TestError.fail)
         }
         promise
@@ -229,7 +228,7 @@ final class ServicePromiseTests: XCTestCase {
 
     func testFinallyCalledOnFulfill() {
         let expectation = self.expectation(description: "Finally should be called on fulfill")
-        let promise = ServicePromise<String> { resolve, _ in
+        let promise = DFPromise<String> { resolve, _ in
             resolve("done")
         }
         promise.finally {
@@ -241,7 +240,7 @@ final class ServicePromiseTests: XCTestCase {
     func testFinallyCalledOnReject() {
         enum TestError: Error { case fail }
         let expectation = self.expectation(description: "Finally should be called on reject")
-        let promise = ServicePromise<String> { _, reject in
+        let promise = DFPromise<String> { _, reject in
             reject(TestError.fail)
         }
         promise.finally {
@@ -251,13 +250,13 @@ final class ServicePromiseTests: XCTestCase {
     }
 
     func testResolveWithValue() {
-        let promise = ServicePromise<Int>.resolve(100)
+        let promise = DFPromise<Int>.resolve(100)
 
         XCTAssertEqual(promise.value, 100)
     }
     func testRejectWithError() {
         enum TestError: Error { case fail }
-        let promise = ServicePromise<Int>.reject(TestError.fail)
+        let promise = DFPromise<Int>.reject(TestError.fail)
 
         XCTAssertNil(promise.value)
         XCTAssertTrue(!promise.isPending)
@@ -265,11 +264,11 @@ final class ServicePromiseTests: XCTestCase {
 
     func testAllAndOrder() {
         let expectation = self.expectation(description: "All resolves in order")
-        let p1 = ServicePromise<Int>.resolve(1)
-        let p2 = ServicePromise<Int>.resolve(2)
-        let p3 = ServicePromise<Int>.resolve(3)
+        let p1 = DFPromise<Int>.resolve(1)
+        let p2 = DFPromise<Int>.resolve(2)
+        let p3 = DFPromise<Int>.resolve(3)
 
-        ServicePromise.all([p1, p2, p3]).then { values in
+        DFPromise.all([p1, p2, p3]).then { values in
             XCTAssertEqual(values, [1, 2, 3])
             expectation.fulfill()
         }
@@ -278,23 +277,23 @@ final class ServicePromiseTests: XCTestCase {
     }
     func testAllAsyncAndOrder() {
         let expectation = self.expectation(description: "All resolves in order with async")
-        let p1 = ServicePromise<Int> { resolve, _ in
+        let p1 = DFPromise<Int> { resolve, _ in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
                 resolve(1)
             }
         }
-        let p2 = ServicePromise<Int> { resolve, _ in
+        let p2 = DFPromise<Int> { resolve, _ in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
                 resolve(2)
             }
         }
-        let p3 = ServicePromise<Int> { resolve, _ in
+        let p3 = DFPromise<Int> { resolve, _ in
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) {
                 resolve(3)
             }
         }
 
-        ServicePromise.all([p1, p2, p3]).then { values in
+        DFPromise.all([p1, p2, p3]).then { values in
             XCTAssertEqual(values, [1, 2, 3])
             expectation.fulfill()
         }
@@ -304,7 +303,7 @@ final class ServicePromiseTests: XCTestCase {
 
     @available(macOS 10.15, iOS 13.0, *)
     func testAsyncInitAndWait() async throws {
-        let promise = ServicePromise<Int> {
+        let promise = DFPromise<Int> {
             try await Task.sleep(nanoseconds: 100_000_000)
             return 99
         }
