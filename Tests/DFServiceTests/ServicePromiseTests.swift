@@ -263,6 +263,45 @@ final class ServicePromiseTests: XCTestCase {
         XCTAssertTrue(!promise.isPending)
     }
 
+    func testAllAndOrder() {
+        let expectation = self.expectation(description: "All resolves in order")
+        let p1 = ServicePromise<Int>.resolve(1)
+        let p2 = ServicePromise<Int>.resolve(2)
+        let p3 = ServicePromise<Int>.resolve(3)
+
+        ServicePromise.all([p1, p2, p3]).then { values in
+            XCTAssertEqual(values, [1, 2, 3])
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+    func testAllAsyncAndOrder() {
+        let expectation = self.expectation(description: "All resolves in order with async")
+        let p1 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                resolve(1)
+            }
+        }
+        let p2 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) {
+                resolve(2)
+            }
+        }
+        let p3 = ServicePromise<Int> { resolve, _ in
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.3) {
+                resolve(3)
+            }
+        }
+
+        ServicePromise.all([p1, p2, p3]).then { values in
+            XCTAssertEqual(values, [1, 2, 3])
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
     @available(macOS 10.15, iOS 13.0, *)
     func testAsyncInitAndWait() async throws {
         let promise = ServicePromise<Int> {
