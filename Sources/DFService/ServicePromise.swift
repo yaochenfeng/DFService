@@ -2,18 +2,22 @@ public final class ServicePromise<Value> {
     public typealias Resolve = (Value) -> Void
     public typealias Reject = (Error) -> Void
     public enum State {
-        case pending, fulfilled, rejected, cancelled
+        case pending, fulfilled, rejected
     }
 
-    private var successHandler: ((Value) -> Void)?
-    private var failureHandler: ((Error) -> Void)?
-    private var finalHandler: (() -> Void)?
-    private var cancelHandler: (() -> Void)?
+    // private var successHandler: ((Value) -> Void)?
+    // private var failureHandler: ((Error) -> Void)?
+    // private var finalHandler: (() -> Void)?
+    // private var cancelHandler: (() -> Void)?
+    /// 用于存储成功回调的数组，便于在 Promise 被解析时调用
+    private var onSuccessHandlers: [(Value) -> Void] = []
+    /// 用于存储失败回调的数组，便于在 Promise 被拒绝时调用
+    private var onFailureHandlers: [(Error) -> Void] = []
+    /// 用于存储最终回调的数组，便于在 Promise 完成时调用
+    private var onFinallyHandlers: [() -> Void] = []
 
-    private(set) public var state: State = .pending
-    private var result: Result<Value, Error>?
-    private var isResolved = false
-    private var isCancelled = false
+    public private(set) var state: State = .pending
+    public private(set) var result: Result<Value, Error>?
 
     public init(
         _ executor: @escaping (_ resolve: @escaping Resolve, _ reject: @escaping Reject) -> Void
@@ -22,116 +26,177 @@ public final class ServicePromise<Value> {
     }
 
     public func resolve(_ value: Value) {
-        guard !isResolved && !isCancelled else { return }
-        isResolved = true
+        guard state == .pending else { return }
         state = .fulfilled
         result = .success(value)
-        successHandler?(value)
-        finalHandler?()
+        self.onSuccessHandlers.forEach { $0(value) }
+        self.onFinallyHandlers.forEach { $0() }
+        clearCallbacks()
     }
 
     public func reject(_ error: Error) {
-        guard !isResolved && !isCancelled else { return }
-        isResolved = true
+        guard state == .pending else { return }
         state = .rejected
         result = .failure(error)
-        failureHandler?(error)
-        finalHandler?()
+        self.onFailureHandlers.forEach { $0(error) }
+        self.onFinallyHandlers.forEach { $0() }
+        clearCallbacks()
     }
 
-    @discardableResult
-    public func then(_ handler: @escaping (Value) -> Void) -> Self {
-        successHandler = handler
-        if case .success(let value)? = result {
-            handler(value)
-        }
-        return self
-    }
-
-    @discardableResult
-    public func `catch`(_ handler: @escaping (Error) -> Void) -> Self {
-        failureHandler = handler
-        if case .failure(let error)? = result {
-            handler(error)
-        }
-        return self
-    }
-
-    @discardableResult
-    public func finally(_ handler: @escaping () -> Void) -> Self {
-        finalHandler = handler
-        if result != nil {
-            handler()
-        }
-        return self
-    }
-
-    public func cancel() {
-        guard !isResolved && !isCancelled else { return }
-        isCancelled = true
-        state = .cancelled
-        cancelHandler?()
-    }
-
-    @discardableResult
-    public func onCancel(_ handler: @escaping () -> Void) -> Self {
-        cancelHandler = handler
-        return self
+    private func clearCallbacks() {
+        onSuccessHandlers.removeAll()
+        onFailureHandlers.removeAll()
+        onFinallyHandlers.removeAll()
     }
 }
 
 extension ServicePromise {
-
-    /// 转换当前 Promise 的结果为新的值类型
     @discardableResult
-    public func map<T>(_ transform: @escaping (Value) -> T) -> ServicePromise<T> {
-        return ServicePromise<T> { resolve, reject in
-            self.then { value in
-                resolve(transform(value))
-            }.catch { error in
-                reject(error)
+    public func then<U>(_ onFulfilled: @escaping (Value) throws -> U) -> ServicePromise<U> {
+        return ServicePromise<U> { resolve, reject in
+            let handle = { (value: Value) in
+                do {
+                    let result = try onFulfilled(value)
+                    resolve(result)
+                } catch {
+                    reject(error)
+                }
+            }
+
+            switch self.state {
+            case .fulfilled:
+                if case .success(let value) = self.result {
+                    handle(value)
+                }
+            case .rejected:
+                if case .failure(let error) = self.result {
+                    reject(error)
+                }
+            case .pending:
+                self.onSuccessHandlers.append(handle)
+                self.onFailureHandlers.append(reject)
+            }
+        }
+    }
+    @discardableResult
+    public func then<U>(
+        _ onFulfilled: @escaping (Value) throws -> ServicePromise<U>
+    ) -> ServicePromise<U> {
+        return ServicePromise<U> { resolve, reject in
+            let handle: (Value) -> Void = { value in
+                do {
+                    let nextPromise = try onFulfilled(value)
+                    nextPromise.then { innerValue in
+                        resolve(innerValue)
+                    }.catch { error in
+                        reject(error)
+                    }
+                } catch {
+                    reject(error)
+                }
+            }
+
+            switch self.state {
+            case .fulfilled:
+                if case .success(let value) = self.result {
+                    handle(value)
+                }
+            case .rejected:
+                if case .failure(let error) = self.result {
+                    reject(error)
+                }
+            case .pending:
+                self.onSuccessHandlers.append(handle)
+                self.onFailureHandlers.append(reject)
             }
         }
     }
 
-    /// 扁平化嵌套 Promise，适合返回另一个异步任务
     @discardableResult
-    public func flatMap<T>(_ transform: @escaping (Value) -> ServicePromise<T>) -> ServicePromise<T>
-    {
-        return ServicePromise<T> { resolve, reject in
-            self.then { value in
-                let next = transform(value)
-                next.then(resolve).catch(reject)
-            }.catch { error in
-                reject(error)
+    public func `catch`(_ onRejected: @escaping (Error) -> Void) -> Self {
+        switch self.state {
+        case .fulfilled:
+            break
+        case .rejected:
+            if case .failure(let error) = self.result {
+                onRejected(error)
             }
+        case .pending:
+            self.onFailureHandlers.append(onRejected)
         }
+        return self
+    }
+    @discardableResult
+    public func finally(_ onFinally: @escaping () -> Void) -> Self {
+        switch self.state {
+        case .fulfilled, .rejected:
+            onFinally()
+        case .pending:
+            self.onFinallyHandlers.append(onFinally)
+        }
+        return self
     }
 
-    /// 等待多个 Promise 完成，返回一个新的 Promise 包含所有结果
-    public static func all<T>(_ promises: [ServicePromise<T>]) -> ServicePromise<[T]> {
-        return ServicePromise<[T]> { resolve, reject in
-            var results = [T?](repeating: nil, count: promises.count)
+    //拓展Promise 常用函数 转换错误等
+    public static func all(_ promises: [ServicePromise<Value>]) -> ServicePromise<[Value]> {
+        return ServicePromise<[Value]> { resolve, reject in
+            var results: [Value] = []
             var remaining = promises.count
 
-            for (i, promise) in promises.enumerated() {
+            if remaining == 0 {
+                resolve([])
+                return
+            }
+
+            for promise in promises {
                 promise.then { value in
-                    results[i] = value
+                    results.append(value)
                     remaining -= 1
                     if remaining == 0 {
-                        resolve(results.compactMap { $0 })
+                        resolve(results)
                     }
-                }.catch(reject)
+                }.catch { error in
+                    reject(error)
+                }
             }
         }
     }
 
-    // 异步构造：从 async 函数创建 ServicePromise
-    @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-    public static func fromAsync(_ work: @escaping () async throws -> Value) -> ServicePromise<
-        Value
-    > {
-        return ServicePromise { resolve, reject in
+    public static func resolve(_ value: Value) -> ServicePromise<Value> {
+        return ServicePromise<Value> { resolve, _ in
+            resolve(value)
+        }
+    }
+
+    public static func reject(_ error: Error) -> ServicePromise<Value> {
+        return ServicePromise<Value> { _, reject in
+            reject(error)
+        }
+    }
+
+    public var value: Value? {
+        switch self.result {
+        case .success(let value):
+            return value
+        case .failure:
+            return nil
+        case nil:
+            return nil
+        }
+    }
+
+    public var isPending: Bool {
+        return self.state == .pending
+    }
+
+}
+
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+extension ServicePromise {
+    public convenience init(
+        _ work: @escaping () async throws -> Value
+    ) {
+        self.init { resolve, reject in
             Task {
                 do {
                     let result = try await work()
@@ -142,11 +207,7 @@ extension ServicePromise {
             }
         }
     }
-
-    /// 将当前 ServicePromise 转换为异步函数，适用于 Swift 5.5+ 的 async/await
-    /// 注意：此方法需要在支持 async/await 的环境中使用
-    @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-    public func toAsync() async throws -> Value {
+    public func wait() async throws -> Value {
         return try await withCheckedThrowingContinuation { continuation in
             self.then { value in
                 continuation.resume(returning: value)
@@ -155,5 +216,4 @@ extension ServicePromise {
             }
         }
     }
-
 }
