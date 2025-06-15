@@ -8,11 +8,19 @@ public enum ServiceError: Error {
     /// - Parameters:
     ///   - code: 错误代码
     ///   - message: 错误消息
-    ///   - debugMessage: 可选的调试消息，默认为 nil
-    /// - Example: `ServiceError.api(code: 404, message: "Not Found")`
-    /// - Example: `ServiceError.api(code: 500, message: "Internal Server Error", debugMessage: "Database connection failed")`
-    case api(code: Int, message: String, debugMessage: String? = nil)
+    ///   - detail: 可选的调试消息，默认为 nil
+    case api(code: Int, message: String, detail: String? = nil)
 
     /// 未实现
     case notImplemented(String = #fileID + " " + #function)
+    /// 自定义错误
+    case custom(Error)
+
+    public static func from(_ error: Error) -> ServiceError {
+        if let serviceError = error as? ServiceError {
+            return serviceError
+        } else {
+            return .custom(error)
+        }
+    }
 }
