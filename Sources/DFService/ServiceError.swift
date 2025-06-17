@@ -7,6 +7,7 @@
 import Foundation
 
 public enum ServiceError: Error {
+    public static var invalidParameters = 1000
     /// API 错误，包含错误代码和消息
     /// - Parameters:
     ///   - code: 错误代码
@@ -14,12 +15,9 @@ public enum ServiceError: Error {
     ///   - detail: 可选的调试消息，默认为 nil
     case api(code: Int, message: String, detail: String? = nil)
 
-    /// 未实现
-<<<<<<< feat/jsonvalue
-    case notImplemented(String = #fileID + " " + #function)
     /// 转换类型失败
     case castError(from: Any, to: Any.Type)
-=======
+    /// 未实现
     case notImplemented(String = #function)
     /// 自定义错误
     case custom(Error)
@@ -34,15 +32,13 @@ public enum ServiceError: Error {
 }
 
 /// 扩展 ServiceError 以提供错误描述
-extension ServiceError: CustomStringConvertible, CustomDebugStringConvertible {
+extension ServiceError: CustomStringConvertible {
     public var errorCode: Int {
         switch self {
         case .api(let code, _, _):
             return code
-        case .notImplemented:
-            return 0  // 未实现的错误没有特定的错误代码
-        case .custom(let error):
-            return (error as NSError).code  // 使用 NSError 的代码
+        default:
+            return ServiceError.invalidParameters
         }
     }
     public var description: String {
@@ -53,20 +49,8 @@ extension ServiceError: CustomStringConvertible, CustomDebugStringConvertible {
             return "未实现: \(location)"
         case .custom(let error):
             return error.localizedDescription
+        case .castError:
+            return "参数错误"
         }
     }
-
-    public var debugDescription: String {
-
-        switch self {
-        case .api(let code, let message, let detail):
-            return
-                "ServiceError api - Code: \(code), Message: \(message), Detail: \(detail ?? "No detail")"
-        case .notImplemented(let location):
-            return "ServiceError - Location: \(location)"
-        case .custom(let error):
-            return "ServiceError - \(error.localizedDescription)"
-        }
-    }
->>>>>>> main
 }
