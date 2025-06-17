@@ -15,4 +15,6 @@ public enum ServiceError: Error {
 
     /// 未实现
     case notImplemented(String = #fileID + " " + #function)
+    /// 转换类型失败
+    case castError(from: Any, to: Any.Type)
 }

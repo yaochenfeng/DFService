@@ -1,5 +1,5 @@
 /// A protocol that defines the required interface for representing the state of a service.
-/// Types conforming to `ServiceStateType` should encapsulate all necessary information
+/// Types conforming to `DFStateType` should encapsulate all necessary information
 /// about the current state of a service, enabling state management and transitions.
 public protocol DFStateType {
     associatedtype Action
