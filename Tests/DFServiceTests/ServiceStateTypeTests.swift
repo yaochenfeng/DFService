@@ -70,7 +70,7 @@ final class ServiceStateTypeTests: XCTestCase {
     }
 }
 
-struct CounterState: ServiceStateType {
+struct CounterState: DFStateType {
     static func effect(action: Action, context: DFService.ServiceStore<CounterState>.EffectContext)
     {
         print("effect state:\(context.state) action:\(action)")

@@ -2,15 +2,16 @@
 
 开发App常用工具和默认服务.
 
-
+## 任务列表
+- JSONValue 处理通用序列化和反序列化
 ## 常用组件 ServiceValues管理常用服务
 - 实现ServiceStateType 纯Swift Redux
 
 
-### 实现ServiceStateType 使用
+### 实现DFStateType 使用
 
 ```swift
-struct CounterState: ServiceStateType {
+struct CounterState: DFStateType {
     enum Action {
         case increment
         case decrement

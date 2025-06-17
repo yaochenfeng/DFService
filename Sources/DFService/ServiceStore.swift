@@ -1,7 +1,7 @@
 import Foundation
 
 
-public final class ServiceStore<State: ServiceStateType> {
+public final class ServiceStore<State: DFStateType> {
 
     public private(set) var state: State {
         didSet {

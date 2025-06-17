@@ -37,7 +37,7 @@ public struct ServicePhase: Comparable, RawRepresentable {
     }
 }
 
-public protocol ServiceModuleType: AnyObject {
+public protocol DFModuleType: AnyObject {
     init(_ manager: ServiceManager)
     static var name: String { get }
     // ren阶段
@@ -48,7 +48,7 @@ public protocol ServiceModuleType: AnyObject {
     func handle(event: ServiceEvent)
 }
 
-extension ServiceModuleType {
+extension DFModuleType {
     public static var name: String {
         return String(describing: self)
     }
