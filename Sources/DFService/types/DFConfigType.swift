@@ -1,8 +1,16 @@
-//
-//  File.swift
-//  DFService
-//
-//  Created by yaochenfeng on 2025/6/18.
-//
-
 import Foundation
+
+public protocol DFConfigType {
+    var modules: [DFModuleType.Type] { get }
+}
+
+
+public struct AppConfig: DFConfigType {
+    public var modules: [ DFModuleType.Type] = []
+    
+    public init() {
+        
+    }
+}
+
+

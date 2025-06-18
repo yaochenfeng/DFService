@@ -1,10 +1,16 @@
 import SwiftUI
+import DFService
+
 
 @main
 struct MyApp: App {
+    let context = DFAppContext.shared
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DFNavigationView { info in
+                HomePage()
+            }
+            
         }
     }
 }

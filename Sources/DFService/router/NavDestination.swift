@@ -1,27 +1,40 @@
-//
-//  File.swift
-//  DFService
-//
-//  Created by yaochenfeng on 2025/6/18.
-//
-
 import Foundation
-public struct Destination: Hashable {
-    public let route: String
-    public let parameters: [String: Any]
-    public let id: UUID
+import SwiftUI
 
-    public init(route: String, parameters: [String: Any] = [:], id: UUID = UUID()) {
-        self.route = route
-        self.parameters = parameters
+public struct NavPathInfo {
+    public let name: String
+    public let param: JSONValue
+    public var isEntry: Bool
+    public init(name: String, param: JSONValue = [:], isEntry: Bool = false) {
+        self.name = name
+        self.param = param
+        self.isEntry = isEntry
+    }
+}
+
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+public struct NavDestination: Hashable, View {
+    public let id: UUID
+    public let info: NavPathInfo
+    public let page: AnyView
+
+    public init<T: View>(id: UUID = UUID(), info: NavPathInfo, @ViewBuilder builder: (NavPathInfo) -> T) {
+        self.info = info
         self.id = id
+        self.page = AnyView(builder(info))
+        
     }
 
-    public static func ==(lhs: Destination, rhs: Destination) -> Bool {
+    public static func ==(lhs: NavDestination, rhs: NavDestination) -> Bool {
         lhs.id == rhs.id
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+    
+    
+    public var body: some View {
+        return page
     }
 }

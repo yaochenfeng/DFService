@@ -1,7 +1,7 @@
 import Foundation
 
-public final class AppContext {
-    public static let shared = AppContext()
+public final class DFAppContext {
+    public static let shared = DFAppContext()
     
     public init(_ config: DFConfigType = AppConfig()) {
         self.config = config
