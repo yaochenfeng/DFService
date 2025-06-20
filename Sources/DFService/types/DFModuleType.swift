@@ -4,7 +4,6 @@ public protocol DFModuleType: AnyObject {
     static var moduleName: String { get }
     init()
     
-    func resovle(route: DFNavigation.Destination) -> Any
 }
 extension DFModuleType {
     public static var moduleName: String {
