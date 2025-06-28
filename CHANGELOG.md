@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.8.0](https://github.com/yaochenfeng/DFService/compare/v0.7.0...v0.8.0) (2025-06-20)
+
+
+### Features
+
+* add DFModuleType ([#28](https://github.com/yaochenfeng/DFService/issues/28)) ([6dc9f24](https://github.com/yaochenfeng/DFService/commit/6dc9f2463e195a1ae73aec379381ee2c5d89624a))
+* 修改协议名称和添加序列化、反序列化类JSONValue ([#27](https://github.com/yaochenfeng/DFService/issues/27)) ([fe3688f](https://github.com/yaochenfeng/DFService/commit/fe3688fb6493276916ffccf302178e8d4d68581a))
+* 移除历史文件 ([#29](https://github.com/yaochenfeng/DFService/issues/29)) ([24e66f5](https://github.com/yaochenfeng/DFService/commit/24e66f5ece8bc0e3a2149353e35c70f130454bb0))
+
+
+### Bug Fixes
+
+* 处理错误信息 ([#25](https://github.com/yaochenfeng/DFService/issues/25)) ([54f890b](https://github.com/yaochenfeng/DFService/commit/54f890bdb1da377a1817785a4fee8bf0d5dd858c))
+
 ## [0.7.0](https://github.com/foxdock/DFService/compare/v0.6.1...v0.7.0) (2025-06-09)
 
 
